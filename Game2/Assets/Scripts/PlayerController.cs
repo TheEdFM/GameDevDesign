@@ -27,6 +27,6 @@ public class PlayerController : MonoBehaviour
     
     void FixedUpdate()
     {
-        rb2d.velocity = speed *(new Vector2(horiz, vert)).normalized;
+        rb2d.velocity = speed * (new Vector2(horiz, vert)).normalized * Mathf.Max(Mathf.Abs(vert), Mathf.Abs(horiz));
     }
 }
