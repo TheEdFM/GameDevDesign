@@ -18,7 +18,8 @@ public class EnemyBehaviourScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D player)
     {
-        StaticStorage.newEncounter(new string[]{ this.name, player.name});//needs to be change to append all party members.
+        StaticStorage.newEncounter(new string[]{ this.name, player.name});//needs to be change to append all party members. 
+        //this needs to change for the new storage
         SceneManager.LoadScene("CombatScene");
         
     }
