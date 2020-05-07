@@ -11,6 +11,8 @@ public class CombatManagerBehaviour : MonoBehaviour
     List<Character> friendlyParty = new List<Character>();
     List<Character> enemyParty = new List<Character>();
 
+    List<GameObject> participantPrefabs = new List<GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +26,17 @@ public class CombatManagerBehaviour : MonoBehaviour
             else
             {
                 enemyParty.Add(participant);
+            }
+            foreach (Character character in StaticStorage.getAllCharacters().Values) {
+                if (character.name == participant.name)
+                {
+                    GameObject a = GameObject.Find(participant.name + " combat");
+                    if (a != null)
+                    {
+                        participantPrefabs.Add(a);
+                    }
+                    Debug.Log(participantPrefabs.Count);
+                }
             }
         }
         combatParticipantsSortList.Sort(CompareInitiative);
@@ -101,7 +114,7 @@ public class CombatManagerBehaviour : MonoBehaviour
             }
 
             turnOrder.Enqueue(turnOrder.Dequeue());
-        } 
+        }
     }
 
     private void UseMove(Move move, Character target)

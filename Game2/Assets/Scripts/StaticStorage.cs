@@ -18,7 +18,8 @@ public static class StaticStorage
 
     private static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"hero", new Character("hero", 10, 0, 100, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"] }, new List<StatusEffect>(){ })}
+        {"hero", new Character("hero", 10, 0, 100, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
+        {"mole", new Character("mole", 5, 1, 50, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })}
     };
     
     private static List<Character> combatParticipants = new List<Character>();
@@ -94,5 +95,10 @@ public static class StaticStorage
             this.stun = stun;
             this.turnsRemaining = turnsRemaining;
         }
+    }
+
+    public static Dictionary<string, Character> getAllCharacters()
+    {
+        return allCharacters;
     }
 }
