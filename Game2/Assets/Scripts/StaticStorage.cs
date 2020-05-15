@@ -12,7 +12,7 @@ public static class StaticStorage
 
     private static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
     {
-        {"Stun", new StatusEffect("Stun", 0 , "stun", true, 1) },
+        {"Stun", new StatusEffect("Stun", 0 , "physical", true, 1) },
         {"Bleed", new StatusEffect("Bleed", 10 , "physical", false, 3) }
     };
 
@@ -21,7 +21,17 @@ public static class StaticStorage
         {"hero", new Character("hero", 10, 0, 100, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
         {"mole", new Character("mole", 5, 1, 50, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })}
     };
-    
+
+    private static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
+    {
+        { "Resurrect Potion", new Item("Resurrect Potion", -50, new StatusEffect[]{ }, true, "resurrect") },
+        { "Health Potion", new Item("Health Potion", -20, new StatusEffect[]{ }, true, "magic") }
+    };
+
+    private static List<ItemAndNumberOwned> playerItems = new List<ItemAndNumberOwned>();
+
+    private static List<Character> playerParty = new List<Character>();
+
     private static List<Character> combatParticipants = new List<Character>();
 
     public static void newEncounter(string[] participants)
@@ -32,11 +42,6 @@ public static class StaticStorage
             combatParticipants.Add(allCharacters[name]);
         }
 
-    }
-
-    public static List<Character> getCombatParticipants()
-    {
-        return combatParticipants;
     }
 
     public class Move
@@ -96,9 +101,54 @@ public static class StaticStorage
             this.turnsRemaining = turnsRemaining;
         }
     }
+    public class Item
+    {
+        public string name;
+        public int damage;
+        public StatusEffect[] statusEffects;
+        public bool appliedToTeam;
+        public string element;
+        public int stun;
 
-    public static Dictionary<string, Character> getAllCharacters()
+        public Item(string name, int damage, StatusEffect[] statusEffects, bool appliedToTeam, string element)
+        {
+            this.name = name;
+            this.damage = damage;
+            this.statusEffects = statusEffects;
+            this.appliedToTeam = appliedToTeam;
+            this.element = element;
+        }
+    }
+
+    public class ItemAndNumberOwned
+    {
+        public Item item;
+        public int numberOwned;
+
+        public ItemAndNumberOwned(Item item, int numberOwned)
+        {
+            this.item = item;
+            this.numberOwned = numberOwned;
+        }
+    }
+
+    public static Dictionary<string, Character> GetAllCharacters()
     {
         return allCharacters;
+    }
+
+    public static List<Character> GetCombatParticipants()
+    {
+        return combatParticipants;
+    }
+
+    public static List<ItemAndNumberOwned> GetPlayerItems()
+    {
+        return playerItems;
+    }
+
+    public static List<Character> GetPlayerParty()
+    {
+        return playerParty;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static StaticStorage;
@@ -13,10 +14,78 @@ public class CombatManagerBehaviour : MonoBehaviour
 
     List<GameObject> participantPrefabs = new List<GameObject>();
 
+    public Dictionary<string, GameObject> menus = new Dictionary<string, GameObject>();
+    public GameObject turnMenu;
+    public GameObject contextMenu;
+    public GameObject itemMenu;
+    public GameObject moveMenu;
+    public GameObject fleeMenu;
+
+    public Dictionary<string, GameObject> items = new Dictionary<string, GameObject>();
+    public GameObject item1;
+    public GameObject item2;
+    public GameObject item3;
+    public GameObject item4;
+
+    public Dictionary<string, GameObject> moves = new Dictionary<string, GameObject>();
+    public GameObject move1;
+    public GameObject move2;
+    public GameObject move3;
+    public GameObject move4;
+
     // Start is called before the first frame update
     void Start()
     {
-        foreach (Character participant in StaticStorage.getCombatParticipants())
+        turnMenu = GameObject.Find("TurnMenu");
+        contextMenu = GameObject.Find("ContextMenu");
+        itemMenu = GameObject.Find("ItemMenu");
+        moveMenu = GameObject.Find("MoveMenu");
+        fleeMenu = GameObject.Find("FleeMenu");
+        menus.Add("TurnMenu", turnMenu);
+        menus.Add("ContextMenu", contextMenu);
+        menus.Add("ItemMenu", itemMenu);
+        menus.Add("MoveMenu", moveMenu);
+        menus.Add("FleeMenu", fleeMenu);
+
+        foreach (GameObject menu in menus.Values)
+        {
+            menu.SetActive(false);
+        }
+
+        turnMenu.SetActive(true);
+
+        item1 = GameObject.Find("Item1");
+        item2 = GameObject.Find("Item2");
+        item3 = GameObject.Find("Item3");
+        item4 = GameObject.Find("Item4");
+        items.Add("Item1", item1);
+        items.Add("Item2", item2);
+        items.Add("Item3", item3);
+        items.Add("Item4", item4);
+
+        move1 = GameObject.Find("Move1");
+        move2 = GameObject.Find("Move2");
+        move3 = GameObject.Find("Move3");
+        move4 = GameObject.Find("Move4");
+        moves.Add("Move1", move1);
+        moves.Add("Move2", move2);
+        moves.Add("Move3", move3);
+        moves.Add("Move4", move4);
+
+        //Adding the the player's items to their selection
+        int i = 1;
+        foreach (ItemAndNumberOwned itemAndNumberOwned in StaticStorage.GetPlayerItems())
+        {
+            TextMeshProUGUI textMeshProUGUI = items["Item" + i].GetComponentInChildren<TextMeshProUGUI>();
+            textMeshProUGUI.SetText(itemAndNumberOwned.item.name + " ("+ itemAndNumberOwned.numberOwned+")");
+            i++;
+        }
+        //for (int j = i; j<=3; j++) //getting rid of buttons for items we dont have not sure why not working
+        //{
+        //    items["Item" + j].SetActive(false);
+        //}
+
+        foreach (Character participant in StaticStorage.GetCombatParticipants())
         {
             combatParticipantsSortList.Add(participant);
             if (participant.team == 0)
@@ -27,7 +96,7 @@ public class CombatManagerBehaviour : MonoBehaviour
             {
                 enemyParty.Add(participant);
             }
-            foreach (Character character in StaticStorage.getAllCharacters().Values) {
+            foreach (Character character in StaticStorage.GetAllCharacters().Values) {
                 if (character.name == participant.name)
                 {
                     GameObject a = GameObject.Find(participant.name + " combat");
