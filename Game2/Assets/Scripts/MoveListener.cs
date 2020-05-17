@@ -25,7 +25,22 @@ public class MoveListener : MonoBehaviour
         string moveName = textMeshProUGUI.text; //name of the move that has been selected
 
         Debug.Log(moveName);
+        combatManager.currentlySelectedMoveOrItemName = moveName;
+        combatManager.currentlySelectedMoveOrItem = "move";
 
-        //TODO: start target selection etc... change the state of the combat manager maybe?
+        combatManager.SetUpTargets(false);
+
+        combatManager.targetSelectionMenu.SetActive(true);
+        if (StaticStorage.allMoves[moveName].appliedToTeam)
+        {
+            combatManager.targetsEmptyGameObjects["FriendlyTargets"].SetActive(true);
+            combatManager.targetsEmptyGameObjects["EnemyTargets"].SetActive(false);
+        }
+        else
+        {
+            combatManager.targetsEmptyGameObjects["FriendlyTargets"].SetActive(false);
+            combatManager.targetsEmptyGameObjects["EnemyTargets"].SetActive(true);
+        }
+        
     }
 }

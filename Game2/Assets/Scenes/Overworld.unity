@@ -5173,7 +5173,7 @@ GameObject:
   - component: {fileID: 1027100182}
   - component: {fileID: 1027100181}
   m_Layer: 0
-  m_Name: mole
+  m_Name: Mole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5369,7 +5369,7 @@ PrefabInstance:
     - target: {fileID: 5775438384536355220, guid: e6f0f6bd7d086c84da0ec8aa568c1817,
         type: 3}
       propertyPath: m_Name
-      value: hero
+      value: Toa
       objectReference: {fileID: 0}
     - target: {fileID: 5775438384536355221, guid: e6f0f6bd7d086c84da0ec8aa568c1817,
         type: 3}

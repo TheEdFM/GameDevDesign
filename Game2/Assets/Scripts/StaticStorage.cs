@@ -4,44 +4,56 @@ using UnityEngine;
 
 public static class StaticStorage
 {
-    private static Dictionary<string, Move> allMoves = new Dictionary<string, Move>()
+    public static Dictionary<string, Move> allMoves = new Dictionary<string, Move>()
     {
         { "Basic Attack", new Move("Basic Attack", 20, new StatusEffect[]{ }, false, "physical") },
         { "Basic Heal", new Move("Basic Heal", -20, new StatusEffect[]{ }, true, "magic") }
     };
 
-    private static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
+    public static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
     {
         {"Stun", new StatusEffect("Stun", 0 , "physical", true, 1) },
         {"Bleed", new StatusEffect("Bleed", 10 , "physical", false, 3) }
     };
 
-    private static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
+    public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"hero", new Character("hero", 10, 0, 100, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
-        {"mole", new Character("mole", 5, 1, 50, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })}
+        {"Toa", new Character("Toa", 10, 0, 100, 100, false, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
+        {"Mole", new Character("Mole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })}
     };
 
-    private static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
+    public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
     {
         { "Resurrect Potion", new Item("Resurrect Potion", -50, new StatusEffect[]{ }, true, "resurrect") },
         { "Health Potion", new Item("Health Potion", -20, new StatusEffect[]{ }, true, "magic") }
     };
 
-    private static List<ItemAndNumberOwned> playerItems = new List<ItemAndNumberOwned>();
+    public static Dictionary<string, ItemAndNumberOwned> playerItems = new Dictionary<string, ItemAndNumberOwned>()
+    {
+        { "Resurrect Potion", new ItemAndNumberOwned(new Item("Resurrect Potion", -50, new StatusEffect[]{ }, true, "resurrect"), 1) },
+        { "Health Potion", new ItemAndNumberOwned(new Item("Health Potion", -20, new StatusEffect[]{ }, true, "magic"), 1) }
+    };
 
-    private static List<Character> playerParty = new List<Character>();
+    public static List<Character> playerParty = new List<Character>();
 
-    private static List<Character> combatParticipants = new List<Character>();
+    public static Dictionary<string, Character> currentCombatParticipants = new Dictionary<string, Character>();
 
     public static void newEncounter(string[] participants)
     {
-        combatParticipants.Clear();
+        currentCombatParticipants.Clear();
         foreach (string name in participants)
         {
-            combatParticipants.Add(allCharacters[name]);
+            resetCharacter(allCharacters[name]);
+            currentCombatParticipants.Add(name, allCharacters[name]);
         }
 
+    }
+
+    public static void resetCharacter(Character character)
+    {
+        character.isDead = false;
+        character.currentHealth = character.maxHealth;
+        character.statusEffects = new List<StatusEffect>();
     }
 
     public class Move
@@ -70,15 +82,18 @@ public static class StaticStorage
         public int team;
         public int maxHealth;
         public int currentHealth;
+        public bool isDead;
         public Move[] moves;
         public List<StatusEffect> statusEffects;
 
-        public Character(string name, int initiative, int team, int maxHealth, Move[] moves, List<StatusEffect> statusEffects)
+        public Character(string name, int initiative, int team, int maxHealth, int currentHealth, bool isDead, Move[] moves, List<StatusEffect> statusEffects)
         {
             this.name = name;
             this.initiative = initiative;
             this.team = team;
             this.maxHealth = maxHealth;
+            this.currentHealth = currentHealth;
+            this.isDead = isDead;
             this.moves = moves;
             this.statusEffects = statusEffects;
         }
@@ -132,23 +147,12 @@ public static class StaticStorage
         }
     }
 
-    public static Dictionary<string, Character> GetAllCharacters()
+    public static void UsePlayerItem(string itemName)
     {
-        return allCharacters;
-    }
-
-    public static List<Character> GetCombatParticipants()
-    {
-        return combatParticipants;
-    }
-
-    public static List<ItemAndNumberOwned> GetPlayerItems()
-    {
-        return playerItems;
-    }
-
-    public static List<Character> GetPlayerParty()
-    {
-        return playerParty;
+        playerItems[itemName].numberOwned -= 1;
+        if (playerItems[itemName].numberOwned <= 0)
+        {
+            playerItems.Remove(itemName);
+        }
     }
 }

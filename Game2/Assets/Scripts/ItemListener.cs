@@ -22,11 +22,44 @@ public class ItemListener : MonoBehaviour
     {
         TextMeshProUGUI textMeshProUGUI = GetComponentInChildren<TextMeshProUGUI>();
 
-        string itemName = textMeshProUGUI.text; //name of the item that has been selected
+        string[] nameParts = textMeshProUGUI.text.Split(" ".ToCharArray()); //item names are eg: "item1 (3)" as shown to the user
+        string itemName = "";
+        for (int i = 0; i < nameParts.Length-1; i++)
+        {
+            if (itemName == "")
+            {
+                itemName = nameParts[i];
+            }
+            else
+            {
+                itemName = itemName + " " + nameParts[i];
+            }
+        } 
 
         Debug.Log(itemName);
+        combatManager.currentlySelectedMoveOrItemName = itemName;
+        combatManager.currentlySelectedMoveOrItem = "item";
 
-        //TODO: start target selection etc... change the state of the combat manager maybe?
+        if (itemName == "Resurrect Potion")
+        {
+            combatManager.SetUpTargets(true);
+        }
+        else
+        {
+            combatManager.SetUpTargets(false);
+        }
+
+        combatManager.targetSelectionMenu.SetActive(true);
+        if (StaticStorage.allItems[itemName].appliedToTeam)
+        {
+            combatManager.targetsEmptyGameObjects["FriendlyTargets"].SetActive(true);
+            combatManager.targetsEmptyGameObjects["EnemyTargets"].SetActive(false);
+        }
+        else
+        {
+            combatManager.targetsEmptyGameObjects["FriendlyTargets"].SetActive(false);
+            combatManager.targetsEmptyGameObjects["EnemyTargets"].SetActive(true);
+        }
     }
 }
 
