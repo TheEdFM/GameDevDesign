@@ -4,34 +4,40 @@ using UnityEngine;
 
 public static class StaticStorage
 {
+    public static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
+    {
+        {"Stun", new StatusEffect("Stun", 0 , "physical", true, 1, 1) },
+        {"Bleed", new StatusEffect("Bleed", 10 , "physical", false, 3, 3) }
+    };
+
     public static Dictionary<string, Move> allMoves = new Dictionary<string, Move>()
     {
         { "Basic Attack", new Move("Basic Attack", 20, new StatusEffect[]{ }, false, "physical") },
-        { "Basic Heal", new Move("Basic Heal", -20, new StatusEffect[]{ }, true, "magic") }
-    };
-
-    public static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
-    {
-        {"Stun", new StatusEffect("Stun", 0 , "physical", true, 1) },
-        {"Bleed", new StatusEffect("Bleed", 10 , "physical", false, 3) }
+        { "Basic Heal", new Move("Basic Heal", -20, new StatusEffect[]{ }, true, "magic") },
+        { "Basic Bleed", new Move("Basic Bleed", 5, new StatusEffect[]{allStatusEffects["Bleed"]}, false, "physical") },
+        { "Basic Stun", new Move("Basic Stun", 5, new StatusEffect[]{allStatusEffects["Stun"]}, false, "physical") },
+        { "Nuke Cannon", new Move("Nuke Cannon", 10000, new StatusEffect[]{}, false, "physical") }
     };
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"Toa", new Character("Toa", 10, 0, 100, 100, false, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
-        {"Mole", new Character("Mole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })}
+        {"Toa", new Character("Toa", "ImageHero", 10, 0, 100, 100, false, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"Treant", new Character("Treant", "ImageTreant", 3, 1, 70, 70, false, new Move[]{allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
+        {"Mole", new Character("Mole", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Mole Slasher", new Character("Mole Slasher", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Daisy", new Character("Daisy", "ImageDaisy", 5, 0, 50, 50, false, new Move[]{allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
     {
-        { "Resurrect Potion", new Item("Resurrect Potion", -50, new StatusEffect[]{ }, true, "resurrect") },
-        { "Health Potion", new Item("Health Potion", -20, new StatusEffect[]{ }, true, "magic") }
+        { "Resurrect Potion", new Item("Resurrect Potion", -70, new StatusEffect[]{ }, true, "magic") },
+        { "Health Potion", new Item("Health Potion", -40, new StatusEffect[]{ }, true, "magic") }
     };
 
     public static Dictionary<string, ItemAndNumberOwned> playerItems = new Dictionary<string, ItemAndNumberOwned>()
     {
-        { "Resurrect Potion", new ItemAndNumberOwned(new Item("Resurrect Potion", -50, new StatusEffect[]{ }, true, "resurrect"), 1) },
-        { "Health Potion", new ItemAndNumberOwned(new Item("Health Potion", -20, new StatusEffect[]{ }, true, "magic"), 1) }
+        { "Resurrect Potion", new ItemAndNumberOwned(allItems["Resurrect Potion"], 1) },
+        { "Health Potion", new ItemAndNumberOwned(allItems["Health Potion"], 3) }
     };
 
     public static List<Character> playerParty = new List<Character>();
@@ -78,6 +84,7 @@ public static class StaticStorage
     public class Character
     {
         public string name;
+        public string imageName;
         public int initiative;
         public int team;
         public int maxHealth;
@@ -86,9 +93,10 @@ public static class StaticStorage
         public Move[] moves;
         public List<StatusEffect> statusEffects;
 
-        public Character(string name, int initiative, int team, int maxHealth, int currentHealth, bool isDead, Move[] moves, List<StatusEffect> statusEffects)
+        public Character(string name, string imageName, int initiative, int team, int maxHealth, int currentHealth, bool isDead, Move[] moves, List<StatusEffect> statusEffects)
         {
             this.name = name;
+            this.imageName = imageName;
             this.initiative = initiative;
             this.team = team;
             this.maxHealth = maxHealth;
@@ -105,15 +113,17 @@ public static class StaticStorage
         public int dot;
         public string element;
         public bool stun;
-        public int turnsRemaining;
+        public int maxTurnsRemaining;
+        public int currentTurnsRemaining;
 
-        public StatusEffect(string name, int dot, string element, bool stun, int turnsRemaining)
+        public StatusEffect(string name, int dot, string element, bool stun, int maxTurnsRemaining, int currentTurnsRemaining)
         {
             this.name = name;
             this.dot = dot;
             this.element = element;
             this.stun = stun;
-            this.turnsRemaining = turnsRemaining;
+            this.maxTurnsRemaining = maxTurnsRemaining;
+            this.currentTurnsRemaining = currentTurnsRemaining;
         }
     }
     public class Item
