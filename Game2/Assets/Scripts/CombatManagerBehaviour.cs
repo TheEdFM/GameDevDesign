@@ -30,7 +30,7 @@ public class CombatManagerBehaviour : MonoBehaviour
     public Vector2 spawnPosEnemy = new Vector2(116, 126);
     public Vector2 spawnPosVerticalChange = new Vector2(0, -53.7f);
     public Vector2 spawnPosOffset = new Vector2(400, 225);
-    public float offsetMultiplier = 1.2f;
+    public float offsetMultiplier = 1.25f;
 
     public GameObject canvas;
 
@@ -96,6 +96,9 @@ public class CombatManagerBehaviour : MonoBehaviour
     public Dictionary<string, GameObject> enemyImages = new Dictionary<string, GameObject>();
 
     public GameObject damageIndicatorPrefab;
+
+    public TextMeshProUGUI turnMenuText;
+    public TextMeshProUGUI turnOrderText;
 
     // Start is called before the first frame update
     void Start()
@@ -190,6 +193,9 @@ public class CombatManagerBehaviour : MonoBehaviour
         images.Add("ImageGuy", imageGuy);
         images.Add("ImageTreant", imageTreant);
         images.Add("ImageMole", imageMole);
+
+        turnMenuText = GameObject.Find("PlayerTakingTurnText").GetComponent<TextMeshProUGUI>();
+        turnOrderText = GameObject.Find("TurnOrderText").GetComponent<TextMeshProUGUI>();
 
         //This sets everything to inactive so it must come after finding the gameobjects
         foreach (GameObject menu in menus.Values)
@@ -360,6 +366,23 @@ public class CombatManagerBehaviour : MonoBehaviour
 
                         Character playerTakingTurn = turnOrder.Peek(); //which character is taking the turn
                         playerTakingTurnName = playerTakingTurn.name;
+
+                        string tempTurnOrderText = "";
+                        int turnOrderI = 0;
+                        foreach (Character c in turnOrder)
+                        {
+                            if (turnOrderI == turnOrder.Count-1)
+                            {
+                                tempTurnOrderText += c.name;
+                            }
+                            else
+                            {
+                                tempTurnOrderText += c.name + ", ";
+                            }
+                            turnOrderI++;
+                        }
+                        turnOrderText.text = tempTurnOrderText;
+
                         turnOrder.Enqueue(turnOrder.Dequeue()); //put them at the back of the queue
 
                         if (!playerTakingTurn.isDead)
@@ -505,6 +528,7 @@ public class CombatManagerBehaviour : MonoBehaviour
                                     }
                                     else //player is given a selection of their possible actions
                                     {
+                                        turnMenuText.text = playerTakingTurn.name;
                                         //Adding the the player's items to their selection
                                         int i = 1;
                                         foreach (ItemAndNumberOwned itemAndNumberOwned in StaticStorage.playerItems.Values)

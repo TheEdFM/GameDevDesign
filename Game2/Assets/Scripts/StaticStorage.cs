@@ -21,7 +21,7 @@ public static class StaticStorage
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"Toa", new Character("Toa", "ImageHero", 10, 0, 100, 100, false, new Move[]{ allMoves["Basic Attack"], allMoves["Basic Heal"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"Toa", new Character("Toa", "ImageHero", 10, 0, 100, 100, false, new Move[]{ allMoves["Basic Attack"], allMoves["Nuke Cannon"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
         {"Treant", new Character("Treant", "ImageTreant", 3, 1, 70, 70, false, new Move[]{allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
         {"Mole", new Character("Mole", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
         {"Mole Slasher", new Character("Mole Slasher", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
