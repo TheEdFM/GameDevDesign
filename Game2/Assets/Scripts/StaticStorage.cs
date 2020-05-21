@@ -6,8 +6,8 @@ public static class StaticStorage
 {
     public static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
     {
-        {"Stun", new StatusEffect("Stun", 0 , "physical", true, 1, 1) },
-        {"Bleed", new StatusEffect("Bleed", 10 , "physical", false, 3, 3) }
+        {"Stun", new StatusEffect("STN", 0 , "physical", true, 1, 1) },
+        {"Bleed", new StatusEffect("BLD", 10 , "physical", false, 3, 3) }
     };
 
     public static Dictionary<string, Move> allMoves = new Dictionary<string, Move>()
@@ -25,7 +25,8 @@ public static class StaticStorage
         {"Treant", new Character("Treant", "ImageTreant", 3, 1, 70, 70, false, new Move[]{allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
         {"Mole", new Character("Mole", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
         {"Mole Slasher", new Character("Mole Slasher", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
-        {"Daisy", new Character("Daisy", "ImageDaisy", 5, 0, 50, 50, false, new Move[]{allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })}
+        {"Daisy", new Character("Daisy", "ImageDaisy", 5, 0, 50, 50, false, new Move[]{allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"King Jebediah", new Character("King Jebediah", "ImageKing", 5, 0, 50, 50, false, new Move[]{allMoves["Basic Attack"]}, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()

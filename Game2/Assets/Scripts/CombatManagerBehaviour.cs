@@ -766,7 +766,7 @@ public class CombatManagerBehaviour : MonoBehaviour
         {
             if (statusEffect.currentTurnsRemaining > 0)
             {
-                statusEffectString += statusEffect.name + ": " + statusEffect.currentTurnsRemaining + " ";
+                statusEffectString += statusEffect.name + ":" + statusEffect.currentTurnsRemaining + " ";
             }
         }
 
