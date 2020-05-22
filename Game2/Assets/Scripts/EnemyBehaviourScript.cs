@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static StaticStorage;
 
 public class EnemyBehaviourScript : MonoBehaviour
 {
@@ -18,9 +19,14 @@ public class EnemyBehaviourScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D player)
     {
-        StaticStorage.newEncounter(new string[]{ this.name, player.name, "Mole Slasher", "Treant", "Daisy" });//needs to be change to append all party members. 
-        //this needs to change for the new storage
-        SceneManager.LoadScene("CombatScene"); // 
-
+        List<string> allParticipants = new List<string>();
+        allParticipants.Add("Mole");
+        allParticipants.Add("Mole Slasher");
+        allParticipants.Add("Treant");
+        foreach (Character playerCharacter in playerParty)
+        {
+            allParticipants.Add(playerCharacter.name);
+        }
+        newEncounter(allParticipants.ToArray());
     }
 }

@@ -18,6 +18,10 @@ public class DialogueController : MonoBehaviour
     public Dialogue currentDialogue;
     public string text;
 
+    public bool skipTypeOut = false;
+    public float timeBetweenLetters = 0.01f;
+    public bool newNode = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +44,7 @@ public class DialogueController : MonoBehaviour
     {
         if (currentDialogue != null)
         {
+            Option[] currentOptions = currentDialogue.currentNode.options;
 
             characterNameText.text = currentDialogue.currentNode.character.name;
 
@@ -47,42 +52,56 @@ public class DialogueController : MonoBehaviour
             text += currentDialogue.currentNode.characterText + "\n\n";
 
             int optionNumber = 0;
-            foreach (Option option in currentDialogue.currentNode.options)
+            foreach (Option option in currentOptions)
             {
-                text += (optionNumber + 1) + ". " + currentDialogue.currentNode.options[optionNumber].optionText + "\n";
+                text += (optionNumber + 1) + ". " + option.optionText + "\n";
 
                 optionNumber++;
             }
 
-            textText.text = text;
+            if (newNode)
+            {
+                StartCoroutine("TypeOut");
+                newNode = false;
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                skipTypeOut = true;
+            }
+            
 
             //If the player chooses an option, change the currentNode,
             //  if the option was an exiting option, hide the dialogue window 
             DialogueNode newCurrentNode = null;
-            if (Input.GetKeyDown(KeyCode.Alpha1) && currentDialogue.currentNode.options.Length > 0)
+            
+            if (Input.GetKeyDown(KeyCode.Alpha1) && currentOptions.Length > 0 && currentOptions[0].IsChooseable())
             {
-                Debug.Log("hi");
-                newCurrentNode = allDialogueNodes[currentDialogue.currentNode.options[0].linkedNode];
+                newCurrentNode = allDialogueNodes[currentOptions[0].linkedNode];
+                currentOptions[0].effects.ApplyEffects();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2) && currentDialogue.currentNode.options.Length > 1)
+            else if (Input.GetKeyDown(KeyCode.Alpha2) && currentOptions.Length > 1 && currentOptions[1].IsChooseable())
             {
-                newCurrentNode = allDialogueNodes[currentDialogue.currentNode.options[1].linkedNode];
+                newCurrentNode = allDialogueNodes[currentOptions[1].linkedNode];
+                currentOptions[1].effects.ApplyEffects();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3) && currentDialogue.currentNode.options.Length > 2)
+            else if (Input.GetKeyDown(KeyCode.Alpha3) && currentOptions.Length > 2 && currentOptions[2].IsChooseable())
             {
-                newCurrentNode = allDialogueNodes[currentDialogue.currentNode.options[2].linkedNode];
+                newCurrentNode = allDialogueNodes[currentOptions[2].linkedNode];
+                currentOptions[2].effects.ApplyEffects();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha4) && currentDialogue.currentNode.options.Length > 3)
+            else if (Input.GetKeyDown(KeyCode.Alpha4) && currentOptions.Length > 3 && currentOptions[3].IsChooseable())
             {
-                newCurrentNode = allDialogueNodes[currentDialogue.currentNode.options[3].linkedNode];
+                newCurrentNode = allDialogueNodes[currentOptions[3].linkedNode];
+                currentOptions[3].effects.ApplyEffects();
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha5) && currentDialogue.currentNode.options.Length > 4)
+            else if (Input.GetKeyDown(KeyCode.Alpha5) && currentOptions.Length > 4 && currentOptions[4].IsChooseable())
             {
-                newCurrentNode = allDialogueNodes[currentDialogue.currentNode.options[4].linkedNode];
+                newCurrentNode = allDialogueNodes[currentOptions[4].linkedNode];
+                currentOptions[4].effects.ApplyEffects();
             }
+
             if (newCurrentNode != null)
             {
-                Debug.Log("poop");
                 SetCurrentNode(newCurrentNode, newCurrentNode.exitDialogue);
             }
         }
@@ -91,6 +110,7 @@ public class DialogueController : MonoBehaviour
 
     public void SetCurrentNode(DialogueNode newCurrentNode, bool exitDialogue)
     {
+        newNode = true;
         if (newCurrentNode != null)
         {
             currentDialogue.currentNode = newCurrentNode;
@@ -113,9 +133,47 @@ public class DialogueController : MonoBehaviour
     public void SetCurrentDialogue(Dialogue newCurrentDialogue)
     {
         currentDialogue = newCurrentDialogue ?? throw new System.ArgumentNullException(nameof(newCurrentDialogue));
+        newNode = true;
         dialoguePanel.SetActive(true);
         dialogueName.SetActive(true);
         dialogueText.SetActive(true);
         toaRB.constraints = RigidbodyConstraints2D.FreezeAll;
+    }
+
+    IEnumerator TypeOut()
+    {
+        int i = 0;
+        string partialText = "";
+        foreach (char c in text)
+        {
+            if (skipTypeOut)
+            {
+                textText.text = text;
+                skipTypeOut = false;
+                break;
+            }
+            else if (i <= currentDialogue.currentNode.characterText.Length-1) {
+                partialText += c;
+                textText.text = partialText;
+                if (c == ' ')
+                {
+                    yield return new WaitForSeconds(timeBetweenLetters);
+                }
+                else if (c == '\n')
+                {
+                    yield return new WaitForSeconds(1f);
+                }
+                else
+                {
+                    yield return new WaitForSeconds(timeBetweenLetters);
+                }
+            }
+            else
+            {
+                textText.text = text;
+                break;
+            }
+            i++;
+        }
     }
 }

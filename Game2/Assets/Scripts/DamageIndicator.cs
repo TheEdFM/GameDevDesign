@@ -20,7 +20,7 @@ public class DamageIndicator : MonoBehaviour
 
         textMeshProUGUI = GetComponent<TextMeshProUGUI>();
 
-        StartCoroutine("DestoryDamageIndicator");
+        StartCoroutine("DestroyDamageIndicator");
     }
 
     // Update is called once per frame
@@ -30,7 +30,7 @@ public class DamageIndicator : MonoBehaviour
         textMeshProUGUI.color = new Color(textMeshProUGUI.color.r, textMeshProUGUI.color.g, textMeshProUGUI.color.b, textMeshProUGUI.color.a-Time.deltaTime*1*1/liveTime);
     }
 
-    IEnumerator DestoryDamageIndicator()
+    IEnumerator DestroyDamageIndicator()
     {
         yield return new WaitForSeconds(liveTime);
         Destroy(this.gameObject);

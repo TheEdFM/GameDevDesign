@@ -26,11 +26,11 @@ public class CombatManagerBehaviour : MonoBehaviour
     public string playerTakingTurnName;
     public bool currentlyStunned;
 
-    public Vector2 spawnPosFriendly = new Vector2(-119, 126);
-    public Vector2 spawnPosEnemy = new Vector2(116, 126);
-    public Vector2 spawnPosVerticalChange = new Vector2(0, -53.7f);
-    public Vector2 spawnPosOffset = new Vector2(400, 225);
-    public float offsetMultiplier = 1.25f;
+    public Vector2 spawnPosFriendly;
+    public Vector2 spawnPosEnemy;
+    public Vector2 spawnPosVerticalChange;
+    public Vector2 spawnPosOffset;
+    public float offsetMultiplier;
 
     public GameObject canvas;
 
@@ -82,27 +82,36 @@ public class CombatManagerBehaviour : MonoBehaviour
     public GameObject enemyStatus3;
     public GameObject enemyStatus4;
 
-    public Dictionary<string, GameObject> images = new Dictionary<string, GameObject>();
-    public GameObject imageHero;
-    public GameObject imageDaisy;
-    public GameObject imageOldMan;
-    public GameObject imageGirl;
-    public GameObject imageGuy;
-    public GameObject imageTreant;
-    public GameObject imageMole;
+    public Dictionary<string, GameObject> sprites = new Dictionary<string, GameObject>();
+    public GameObject spriteHero;
+    public GameObject spritePrincess;
+    public GameObject spriteOldMan;
+    public GameObject spriteGirl;
+    public GameObject spriteGuy;
+    public GameObject spriteTreant;
+    public GameObject spriteMole;
+    public GameObject spriteStranger;
 
-    public Dictionary<string, GameObject> friendlyImages = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> friendlySprites = new Dictionary<string, GameObject>();
 
-    public Dictionary<string, GameObject> enemyImages = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> enemySprites = new Dictionary<string, GameObject>();
 
     public GameObject damageIndicatorPrefab;
 
     public TextMeshProUGUI turnMenuText;
     public TextMeshProUGUI turnOrderText;
 
+    public List<GameObject> cloneList = new List<GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
+        spawnPosFriendly = new Vector2(-2.08f, 6.5f);
+        spawnPosEnemy = new Vector2(10.11f, 6.5f);
+        spawnPosVerticalChange = new Vector2(0, -2.75f);
+        spawnPosOffset = new Vector2(400, 225);
+        offsetMultiplier = 1.25f;
+
         state = "start";
 
         canvas = GameObject.Find("Canvas");
@@ -179,20 +188,22 @@ public class CombatManagerBehaviour : MonoBehaviour
         enemyStatuses.Add("EnemyStatus3", enemyStatus3);
         enemyStatuses.Add("EnemyStatus4", enemyStatus4);
 
-        imageHero = GameObject.Find("ImageHero");
-        imageDaisy = GameObject.Find("ImageDaisy");
-        imageOldMan = GameObject.Find("ImageOldMan");
-        imageGirl = GameObject.Find("ImageGirl");
-        imageGuy = GameObject.Find("ImageGuy");
-        imageTreant = GameObject.Find("ImageTreant");
-        imageMole = GameObject.Find("ImageMole");
-        images.Add("ImageHero", imageHero);
-        images.Add("ImageDaisy", imageDaisy);
-        images.Add("ImageOldMan", imageOldMan);
-        images.Add("ImageGirl", imageGirl);
-        images.Add("ImageGuy", imageGuy);
-        images.Add("ImageTreant", imageTreant);
-        images.Add("ImageMole", imageMole);
+        spriteHero = GameObject.Find("SpriteHero");
+        spritePrincess = GameObject.Find("SpritePrincess");
+        spriteOldMan = GameObject.Find("SpriteOldMan");
+        spriteGirl = GameObject.Find("SpriteGirl");
+        spriteGuy = GameObject.Find("SpriteGuy");
+        spriteTreant = GameObject.Find("SpriteTreant");
+        spriteMole = GameObject.Find("SpriteMole");
+        spriteStranger = GameObject.Find("SpriteStranger");
+        sprites.Add("SpriteHero", spriteHero);
+        sprites.Add("SpritePrincess", spritePrincess);
+        sprites.Add("SpriteOldMan", spriteOldMan);
+        sprites.Add("SpriteGirl", spriteGirl);
+        sprites.Add("SpriteGuy", spriteGuy);
+        sprites.Add("SpriteTreant", spriteTreant);
+        sprites.Add("SpriteMole", spriteMole);
+        sprites.Add("SpriteStranger", spriteStranger);
 
         turnMenuText = GameObject.Find("PlayerTakingTurnText").GetComponent<TextMeshProUGUI>();
         turnOrderText = GameObject.Find("TurnOrderText").GetComponent<TextMeshProUGUI>();
@@ -270,9 +281,13 @@ public class CombatManagerBehaviour : MonoBehaviour
                     image.fillAmount = (float)character.currentHealth/character.maxHealth;
                 }
             }
-            GameObject friendlyImage = Instantiate(images[character.imageName], (spawnPosFriendly + (spawnPosVerticalChange * (i - 1))) * offsetMultiplier + new Vector2(canvas.transform.position.x, canvas.transform.position.y), new Quaternion(0, 0, 0, 0));
-            friendlyImage.transform.SetParent(canvas.transform);
-            friendlyImages.Add("FriendlyImage" + i, friendlyImage);
+
+            GameObject friendlySprite = Instantiate(sprites[character.spriteName], spawnPosFriendly + (spawnPosVerticalChange * (i - 1)), new Quaternion(0, 0, 0, 0));
+            cloneList.Add(friendlySprite);
+            friendlySprite.transform.localScale = new Vector3(friendlySprite.transform.localScale.x * -2, friendlySprite.transform.localScale.y * 2, friendlySprite.transform.localScale.y * 2);
+            SpriteRenderer friendlySpriteSR = friendlySprite.GetComponent<SpriteRenderer>();
+            friendlySpriteSR.sortingOrder = 101;
+            friendlySprites.Add("FriendlySprite" + i, friendlySprite);
 
             i++;
         }
@@ -308,10 +323,14 @@ public class CombatManagerBehaviour : MonoBehaviour
                     image.fillAmount = (float)character.currentHealth / character.maxHealth;
                 }
             }
-            GameObject enemyImage = Instantiate(images[character.imageName], (spawnPosEnemy + (spawnPosVerticalChange * ( i - 1 ))) * offsetMultiplier + new Vector2(canvas.transform.position.x, canvas.transform.position.y), new Quaternion(0,0,0,0));
-            enemyImage.transform.SetParent(canvas.transform);
-            enemyImages.Add("EnemyImage" + i, enemyImage);
-            
+
+            GameObject enemySprite = Instantiate(sprites[character.spriteName], spawnPosEnemy + (spawnPosVerticalChange * (i - 1)), new Quaternion(0, 0, 0, 0));
+            cloneList.Add(enemySprite);
+            enemySprite.transform.localScale = new Vector3(enemySprite.transform.localScale.x * -2, enemySprite.transform.localScale.y * 2, enemySprite.transform.localScale.y * 2);
+            SpriteRenderer enemySpriteSR = enemySprite.GetComponent<SpriteRenderer>();
+            enemySpriteSR.sortingOrder = 101;
+            enemySprites.Add("EnemySprite" + i, enemySprite);
+
             i++;
         }
         for (int j = i; j <= 4; j++) //getting rid of status panels for characters that aren't there
@@ -327,7 +346,14 @@ public class CombatManagerBehaviour : MonoBehaviour
         switch (state)
         {
             case "end": //end of battle
-                SceneManager.LoadScene("Overworld");
+                //SceneManager.LoadScene("Overworld");
+                foreach (GameObject clone in cloneList)
+                {
+                    Destroy(clone);
+                }
+                SceneManager.UnloadSceneAsync("CombatScene");
+                player.mainCamera.SetActive(true);
+                player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
                 break;
             case "start": // Prepare the player's selection, or prepare and complete the turn for ai
                 {
@@ -398,18 +424,19 @@ public class CombatManagerBehaviour : MonoBehaviour
                                     playerTakingTurn.currentHealth -= statusEffect.dot;
 
                                     //for damageIndicator
-                                    GameObject image;
+                                    GameObject target;
                                     if (playerTakingTurn.team == 0) //friendly
                                     {
-                                        int imageIndex = friendlyParty.IndexOf(playerTakingTurn);
-                                        image = friendlyImages["FriendlyImage" + (imageIndex + 1)];
+                                        int targetIndex = friendlyParty.IndexOf(playerTakingTurn);
+                                        target = friendlyTargets["FriendlyTarget" + (targetIndex + 1)];
                                     }
                                     else //enemy
                                     {
-                                        int imageIndex = enemyParty.IndexOf(playerTakingTurn);
-                                        image = enemyImages["EnemyImage" + (imageIndex + 1)];
+                                        int targetIndex = enemyParty.IndexOf(playerTakingTurn);
+                                        target = enemyTargets["EnemyTarget" + (targetIndex + 1)];
                                     }
-                                    GameObject damageIndicator = Instantiate(damageIndicatorPrefab, image.transform.position, new Quaternion(0, 0, 0, 0));
+                                    GameObject damageIndicator = Instantiate(damageIndicatorPrefab, target.transform.position, new Quaternion(0, 0, 0, 0));
+                                    cloneList.Add(damageIndicator);
                                     damageIndicator.transform.SetParent(canvas.transform);
                                     TextMeshProUGUI textMeshProUGUI = damageIndicator.GetComponent<TextMeshProUGUI>();
                                     textMeshProUGUI.text = System.Math.Abs(statusEffect.dot).ToString();
@@ -449,7 +476,7 @@ public class CombatManagerBehaviour : MonoBehaviour
                                 {
                                     if (enemyParty.Contains(playerTakingTurn)) //enemy automatically takes action
                                     {
-                                        int randomMoveNum = Random.Range(0, playerTakingTurn.moves.Length);
+                                        int randomMoveNum = Random.Range(0, playerTakingTurn.moves.Count);
                                         int randomTargetNum;
                                         if (playerTakingTurn.moves[randomMoveNum].appliedToTeam)
                                         {
@@ -531,11 +558,16 @@ public class CombatManagerBehaviour : MonoBehaviour
                                         turnMenuText.text = playerTakingTurn.name;
                                         //Adding the the player's items to their selection
                                         int i = 1;
-                                        foreach (ItemAndNumberOwned itemAndNumberOwned in StaticStorage.playerItems.Values)
+                                        List<Item> seenItems = new List<Item>();
+                                        foreach (Item item in playerItems)
                                         {
-                                            TextMeshProUGUI textMeshProUGUI = items["Item" + i].GetComponentInChildren<TextMeshProUGUI>();
-                                            textMeshProUGUI.SetText(itemAndNumberOwned.item.name + " (" + itemAndNumberOwned.numberOwned + ")");
-                                            i++;
+                                            if (!seenItems.Contains(item))
+                                            {
+                                                TextMeshProUGUI textMeshProUGUI = items["Item" + i].GetComponentInChildren<TextMeshProUGUI>();
+                                                textMeshProUGUI.SetText(item.name + " (" + StaticStorage.GetItemCount(item) + ")");
+                                                seenItems.Add(item);
+                                                i++;
+                                            }
                                         }
                                         for (int j = i; j <= 4; j++) //getting rid of buttons for items we dont have
                                         {
@@ -579,24 +611,24 @@ public class CombatManagerBehaviour : MonoBehaviour
         }
     }
 
-    private void UseMove(Move move, Character target)
+    private void UseMove(Move move, Character targetCharacter)
     {
-        target.currentHealth -= move.damage;
+        targetCharacter.currentHealth -= move.damage;
 
         //for damageIndicator
-        GameObject image;
-        int index;
-        if (target.team == 0) //friendly
+        GameObject target;
+        if (targetCharacter.team == 0) //friendly
         {
-            index = friendlyParty.IndexOf(target);
-            image = friendlyImages["FriendlyImage" + (index + 1)];
+            int targetIndex = friendlyParty.IndexOf(targetCharacter);
+            target = friendlyTargets["FriendlyTarget" + (targetIndex + 1)];
         }
         else //enemy
         {
-            index = enemyParty.IndexOf(target);
-            image = enemyImages["EnemyImage" + (index + 1)];
+            int targetIndex = enemyParty.IndexOf(targetCharacter);
+            target = enemyTargets["EnemyTarget" + (targetIndex + 1)];
         }
-        GameObject damageIndicator = Instantiate(damageIndicatorPrefab, image.transform.position, new Quaternion(0, 0, 0, 0));
+        GameObject damageIndicator = Instantiate(damageIndicatorPrefab, target.transform.position, new Quaternion(0, 0, 0, 0));
+        cloneList.Add(damageIndicator);
         damageIndicator.transform.SetParent(canvas.transform);
         TextMeshProUGUI textMeshProUGUI = damageIndicator.GetComponent<TextMeshProUGUI>();
         textMeshProUGUI.text = System.Math.Abs(move.damage).ToString();
@@ -615,31 +647,31 @@ public class CombatManagerBehaviour : MonoBehaviour
 
         foreach (StatusEffect statusEffect in move.statusEffects)
         {
-            target.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
+            targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
         }
 
-        RefreshHealth(target);
+        RefreshHealth(targetCharacter);
 
     }
 
-    private void UseItem(Item item, Character target)
+    private void UseItem(Item item, Character targetCharacter)
     {
-        target.currentHealth -= item.damage;
+        targetCharacter.currentHealth -= item.damage;
 
         //for damageIndicator
-        GameObject image;
-        int index;
-        if (target.team == 0) //friendly
+        GameObject target;
+        if (targetCharacter.team == 0) //friendly
         {
-            index = friendlyParty.IndexOf(target);
-            image = friendlyImages["FriendlyImage" + (index + 1)];
+            int targetIndex = friendlyParty.IndexOf(targetCharacter);
+            target = friendlyTargets["FriendlyTarget" + (targetIndex + 1)];
         }
         else //enemy
         {
-            index = enemyParty.IndexOf(target);
-            image = enemyImages["EnemyImage" + (index + 1)];
+            int targetIndex = enemyParty.IndexOf(targetCharacter);
+            target = enemyTargets["EnemyTarget" + (targetIndex + 1)];
         }
-        GameObject damageIndicator = Instantiate(damageIndicatorPrefab, image.transform.position, new Quaternion(0, 0, 0, 0));
+        GameObject damageIndicator = Instantiate(damageIndicatorPrefab, target.transform.position, new Quaternion(0, 0, 0, 0));
+        cloneList.Add(damageIndicator);
         damageIndicator.transform.SetParent(canvas.transform);
         TextMeshProUGUI textMeshProUGUI = damageIndicator.GetComponent<TextMeshProUGUI>();
         textMeshProUGUI.text = System.Math.Abs(item.damage).ToString();
@@ -658,10 +690,10 @@ public class CombatManagerBehaviour : MonoBehaviour
 
         foreach (StatusEffect statusEffect in item.statusEffects)
         {
-            target.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
+            targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
         }
 
-        RefreshHealth(target);
+        RefreshHealth(targetCharacter);
 
         StaticStorage.UsePlayerItem(item.name); //reduced the number of items the player has, if 0 are left the item is removed from choices
     }
@@ -712,11 +744,11 @@ public class CombatManagerBehaviour : MonoBehaviour
             }
             if (c.isDead)
             {
-                friendlyImages["FriendlyImage" + i].transform.rotation = new Quaternion(0, 0, 0.25f, 0);
+                friendlySprites["FriendlySprite" + i].transform.rotation = new Quaternion(0, 0, 0.25f, 0);
             }
             else
             {
-                friendlyImages["FriendlyImage" + i].transform.rotation = new Quaternion(0, 0, 0, 0);
+                friendlySprites["FriendlySprite" + i].transform.rotation = new Quaternion(0, 0, 0, 0);
             }
             i++;
         }
@@ -742,11 +774,11 @@ public class CombatManagerBehaviour : MonoBehaviour
             }
             if (c.isDead)
             {
-                enemyImages["EnemyImage" + i].transform.rotation = new Quaternion(0, 0, 0.25f, 0);
+                enemySprites["EnemySprite" + i].transform.rotation = new Quaternion(0, 0, 0.25f, 0);
             }
             else
             {
-                enemyImages["EnemyImage" + i].transform.rotation = new Quaternion(0, 0, 0, 0);
+                enemySprites["EnemySprite" + i].transform.rotation = new Quaternion(0, 0, 0, 0);
             }
             i++;
         }

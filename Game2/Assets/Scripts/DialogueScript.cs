@@ -6,6 +6,7 @@ using static DialogueStaticStorage;
 public class DialogueScript : MonoBehaviour
 {
     DialogueController dialogueController;
+    public string dialogueName; 
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +22,13 @@ public class DialogueScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D player)
     {
-        dialogueController.SetCurrentDialogue(test);
+        if (dialogueName == "test")
+        {
+            dialogueController.SetCurrentDialogue(test);
+        }
+        else if (dialogueName == "testExtraDialogue")
+        {
+            dialogueController.SetCurrentDialogue(testExtraDialogue);
+        }
     }
 }

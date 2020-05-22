@@ -1,74 +1,99 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static StaticStorage;
+using static StoryStaticStorage;
 
 public static class DialogueStaticStorage
 {
     //Test dialogue
 
-    public static DialogueNode test0 = new DialogueNode("Welcome to my kingdom," +
-        " I hope your journey was manageable?" +
-        " Go ahead, say something!",
-            new Option[] {
-                new Option("It's been a long and tiresome journey, can you help us?",
+    public static Option testOption0 = new Option("It's been a long and tiresome journey, can you help us?",
                     "test1",
-                    new Requirements(1,0,1,0,1,0,1,0),
-                    new Effects(0,0,0,0,0,0,0,0,new Character[]{ },new Move[]{ },new Character[]{ },new Character[]{ },new Move[]{ },new Item[]{ },new Item[]{ },"")),
-                new Option("Who are you?",
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+    public static Option testOption1 = new Option("Who are you?",
                     "test2",
-                    new Requirements(1,0,1,0,1,0,1,0),
-                    new Effects(0,0,0,0,0,0,0,0,new Character[]{ },new Move[]{ },new Character[]{ },new Character[]{ },new Move[]{ },new Item[]{ },new Item[]{ },""))
-            },
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+    public static Option testOption2 = new Option("Thank you!",
+                    "test3",
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { allItems["Health Potion"] }, new Item[] { }, ""));
+    public static Option testOption3 = new Option("Bye",
+                    "test4",
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+
+    public static DialogueNode test0 = new DialogueNode("Welcome to my kingdom, " +
+        "I hope your journey was manageable? " +
+        "Go ahead, say something! " +
+        "I'm going to keep speaking to show how this text jus rolls and rolls and rolls and now theres going to be a gap, also hopefully by this time " +
+        "you'll be able to see the text wrapping around the whole of the panel oh yeah i have to leave a gap here it comes..\nboom its done its a line break" +
+        "wow thats really cool ok say something now alternatively you could have just skipped this trash with the spacebar",
+            new Option[] { testOption0, testOption1 },
             allCharacters["King Jebediah"],
             false);
 
     public static DialogueNode test1 = new DialogueNode("Yes I can give you a health potion",
-            new Option[] {
-                new Option("Thank you!",
-                    "test3",
-                    new Requirements(1,0,1,0,1,0,1,0),
-                    new Effects(0,0,0,0,0,0,0,0,new Character[]{ },new Move[]{ },new Character[]{ },new Character[]{ },new Move[]{ },new Item[]{allItems["Health Potion"]},new Item[]{ },"")) },
+            new Option[] { testOption2 },
             allCharacters["King Jebediah"],
             false);
 
-    public static DialogueNode test2 = new DialogueNode("I an King Jebediah, ruler of this once powerful kingdom.",
-            new Option[] {
-                new Option("It's been a long and tiresome journey, can you help us?",
-                    "test1",
-                    new Requirements(1,0,1,0,1,0,1,0),
-                    new Effects(0,0,0,0,0,0,0,0,new Character[]{ },new Move[]{ },new Character[]{ },new Character[]{ },new Move[]{ },new Item[]{},new Item[]{ },"")) },
+    public static DialogueNode test2 = new DialogueNode("I am King Jebediah, ruler of this once powerful kingdom.",
+            new Option[] { testOption0 },
             allCharacters["King Jebediah"],
             false);
 
     public static DialogueNode test3 = new DialogueNode("No problem my young traveller, now be on your way!",
-            new Option[] {
-                new Option("Bye",
-                    "test4",
-                    new Requirements(1,0,1,0,1,0,1,0),
-                    new Effects(0,0,0,0,0,0,0,0,new Character[]{ },new Move[]{ },new Character[]{ },new Character[]{ },new Move[]{ },new Item[]{},new Item[]{ },"")) },
+            new Option[] { testOption3 },
             allCharacters["King Jebediah"],
             false);
 
     public static DialogueNode test4 = new DialogueNode("You had best be on your way, traveller.",
-            new Option[] {
-                new Option("Bye",
-                    "test4",
-                    new Requirements(1,0,1,0,1,0,1,0),
-                    new Effects(0,0,0,0,0,0,0,0,new Character[]{ },new Move[]{ },new Character[]{ },new Character[]{ },new Move[]{ },new Item[]{},new Item[]{ },"")) },
+            new Option[] { testOption3 },
             allCharacters["King Jebediah"],
             true);
 
     public static Dialogue test = new Dialogue(test0);
+
     //Test dialogue end
 
+    //testExtraDialogue dialogue start
+
+    public static Option testExtraDialogueOption0 = new Option("Yes",
+                    "testExtraDialogue1",
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, allCharacters["Toa"], new Move[] { allMoves["Nuke Cannon"] }, allCharacters["Toa"], new Move[] { allMoves["Basic Attack"] }, new Character[] { allCharacters["Stranger"] }, new Character[] { allCharacters["Daisy"] }, new Item[] { }, new Item[] { allItems["Health Potion"] }, ""));
+    public static Option testExtraDialogueOption1 = new Option("See you in combat!",
+                    "testExtraDialogue1",
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+
+    public static DialogueNode testExtraDialogue0 = new DialogueNode("Hey can I join your adventure?",
+            new Option[] { testExtraDialogueOption0 },
+            allCharacters["Stranger"],
+            false);
+    public static DialogueNode testExtraDialogue1 = new DialogueNode("Good to be with you!",
+            new Option[] { testExtraDialogueOption1 },
+            allCharacters["Stranger"],
+            true);
+
+    public static Dialogue testExtraDialogue = new Dialogue(testExtraDialogue0);
+
+    //testExtraDialogue dialogue end
+
+    //This is here so they can all reference themselves and ones which were defined before themselves
     public static Dictionary<string, DialogueNode> allDialogueNodes = new Dictionary<string, DialogueNode>()
     {
         {"test0", test0 },
         {"test1", test1 },
         {"test2", test2 },
         {"test3", test3 },
-        {"test4", test4 }
+        {"test4", test4 },
+        {"testExtraDialogue0", testExtraDialogue0 },
+        {"testExtraDialogue1", testExtraDialogue1 }
     };
 
     public class Dialogue
@@ -111,6 +136,47 @@ public static class DialogueStaticStorage
             this.requirements = requirements;
             this.effects = effects;
         }
+
+        internal bool IsChooseable()
+        {
+            bool isChooseable = true;
+
+            //check requirements
+
+            float greedyGivingRatio = greedy / (greedy + giving);
+            float cunningHonorRatio = cunning / (cunning + honor);
+            float disdainVigilanceRatio = disdain / (disdain + vigilance);
+            float evilGoodRatio = evil / (evil + good);
+
+            if (requirements.greedyGivingRatioMax < greedyGivingRatio || requirements.greedyGivingRatioMin > greedyGivingRatio)
+            {
+                isChooseable = false;
+            }
+            if (requirements.cunningHonorRatioMax < cunningHonorRatio || requirements.cunningHonorRatioMin > cunningHonorRatio)
+            {
+                isChooseable = false;
+            }
+            if (requirements.disdainVigilanceRatioMax < disdainVigilanceRatio || requirements.disdainVigilanceRatioMin > disdainVigilanceRatio)
+            {
+                isChooseable = false;
+            }
+            if (requirements.evilGoodRatioMax < evilGoodRatio || requirements.evilGoodRatioMin > evilGoodRatio)
+            {
+                isChooseable = false;
+            }
+            //end check requirements
+
+            //check storyengine bools eg: do you have an item true/false, have you done something true/false
+
+            /*if (requirements.someStoryBool && !StoryStaticStorage.someStoryBool)
+            {
+                isChooseable = false;
+            }*/
+
+            //end check storyengine bools
+
+            return isChooseable;
+        }
     }
     public class Requirements
     {
@@ -121,9 +187,9 @@ public static class DialogueStaticStorage
         public readonly float disdainVigilanceRatioMax;
         public readonly float disdainVigilanceRatioMin;
         public readonly float evilGoodRatioMax;
-        public readonly float evilGoodRatioMMin;
+        public readonly float evilGoodRatioMin;
 
-        public Requirements(float greedyGivingRatioMax, float greedyGivingRatioMin, float cunningHonorRatioMax, float cunningHonorRatioMin, float disdainVigilanceRatioMax, float disdainVigilanceRatioMin, float evilGoodRatioMax, float evilGoodRatioMMin)//and any bools from the story engine
+        public Requirements(float greedyGivingRatioMax, float greedyGivingRatioMin, float cunningHonorRatioMax, float cunningHonorRatioMin, float disdainVigilanceRatioMax, float disdainVigilanceRatioMin, float evilGoodRatioMax, float evilGoodRatioMin)//and any bools from the story engine
         {
             this.greedyGivingRatioMax = greedyGivingRatioMax;
             this.greedyGivingRatioMin = greedyGivingRatioMin;
@@ -132,7 +198,7 @@ public static class DialogueStaticStorage
             this.disdainVigilanceRatioMax = disdainVigilanceRatioMax;
             this.disdainVigilanceRatioMin = disdainVigilanceRatioMin;
             this.evilGoodRatioMax = evilGoodRatioMax;
-            this.evilGoodRatioMMin = evilGoodRatioMMin;
+            this.evilGoodRatioMin = evilGoodRatioMin;
         }
     }
     public class Effects
@@ -145,11 +211,11 @@ public static class DialogueStaticStorage
         public readonly float vigilance;
         public readonly float evil;
         public readonly float good;
-        public float[] gGCHDVEG = new float[8];
-        public readonly Character[] charactersToAddMoves;
+        public readonly Character characterToAddMoves;
         public readonly Move[] movesToAdd;
         public readonly Character[] charactersToAddToParty;
-        public readonly Character[] charactersToRemoveMoves;
+        public readonly Character[] charactersToRemoveFromParty;
+        public readonly Character characterToRemoveMoves;
         public readonly Move[] movesToRemove;
         public readonly Item[] itemsToAdd;
         public readonly Item[] itemsToRemove;
@@ -163,39 +229,77 @@ public static class DialogueStaticStorage
                        float vigilance,
                        float evil,
                        float good,
-                       Character[] charactersToAddMoves,
+                       Character characterToAddMoves,
                        Move[] movesToAdd,
-                       Character[] charactersToAddToParty,
-                       Character[] charactersToRemoveMoves,
+                       Character characterToRemoveMoves,
                        Move[] movesToRemove,
+                       Character[] charactersToAddToParty,
+                       Character[] charactersToRemoveFromParty,
                        Item[] itemsToAdd,
                        Item[] itemsToRemove,
                        string storyEngineSwitchInput)
         {
             this.greedy = greedy;
-            gGCHDVEG[0] = greedy;
             this.giving = giving;
-            gGCHDVEG[1] = giving;
             this.cunning = cunning;
-            gGCHDVEG[2] = cunning;
             this.honor = honor;
-            gGCHDVEG[3] = honor;
             this.disdain = disdain;
-            gGCHDVEG[4] = disdain;
             this.vigilance = vigilance;
-            gGCHDVEG[5] = vigilance;
             this.evil = evil;
-            gGCHDVEG[6] = evil;
             this.good = good;
-            gGCHDVEG[7] = good;
-            this.charactersToAddMoves = charactersToAddMoves;
+            this.characterToAddMoves = characterToAddMoves;
             this.movesToAdd = movesToAdd;
             this.charactersToAddToParty = charactersToAddToParty;
-            this.charactersToRemoveMoves = charactersToRemoveMoves;
+            this.charactersToRemoveFromParty = charactersToRemoveFromParty;
+            this.characterToRemoveMoves = characterToRemoveMoves;
             this.movesToRemove = movesToRemove;
             this.itemsToAdd = itemsToAdd;
             this.itemsToRemove = itemsToRemove;
             this.storyEngineSwitchInput = storyEngineSwitchInput;
+        }
+
+        public void ApplyEffects()
+        {
+            StoryStaticStorage.greedy += greedy;
+            StoryStaticStorage.giving += giving;
+            StoryStaticStorage.cunning += cunning;
+            StoryStaticStorage.honor += honor;
+            StoryStaticStorage.disdain += disdain;
+            StoryStaticStorage.vigilance += vigilance;
+            StoryStaticStorage.evil += evil;
+            StoryStaticStorage.good += good;
+
+            if (characterToAddMoves != null)
+            {
+                foreach (Move move in movesToAdd)
+                {
+                    characterToAddMoves.moves.Add(move);
+                }
+            }
+            foreach (Character character in charactersToAddToParty)
+            {
+                playerParty.Add(character);
+            }
+            foreach (Character character in charactersToRemoveFromParty)
+            {
+                playerParty.Remove(character);
+            }
+            if (characterToRemoveMoves != null)
+            {
+                foreach (Move move in movesToRemove)
+                {
+                    characterToAddMoves.moves.Remove(move);
+                }
+            }
+            foreach (Item item in itemsToAdd)
+            {
+                playerItems.Add(item);
+            }
+            foreach (Item item in itemsToRemove)
+            {
+                playerItems.Remove(item);
+            }
+            storySwitch(storyEngineSwitchInput);
         }
     }
 }

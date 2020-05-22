@@ -9,11 +9,13 @@ public class PlayerController : MonoBehaviour
     private float horiz;
     private float vert;
     public float speed;
+    public GameObject mainCamera;
     // Start is called before the first frame update
     void Start()
     {
-       rb2d = GetComponent<Rigidbody2D>();
-       anim = GetComponent<Animator>();
+        rb2d = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
     }
 
     // Update is called once per frame

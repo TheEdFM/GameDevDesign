@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class StaticStorage
 {
@@ -21,12 +22,13 @@ public static class StaticStorage
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"Toa", new Character("Toa", "ImageHero", 10, 0, 100, 100, false, new Move[]{ allMoves["Basic Attack"], allMoves["Nuke Cannon"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
-        {"Treant", new Character("Treant", "ImageTreant", 3, 1, 70, 70, false, new Move[]{allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
-        {"Mole", new Character("Mole", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
-        {"Mole Slasher", new Character("Mole Slasher", "ImageMole", 5, 1, 50, 50, false, new Move[]{ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
-        {"Daisy", new Character("Daisy", "ImageDaisy", 5, 0, 50, 50, false, new Move[]{allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
-        {"King Jebediah", new Character("King Jebediah", "ImageKing", 5, 0, 50, 50, false, new Move[]{allMoves["Basic Attack"]}, new List<StatusEffect>(){ })}
+        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 100, 100, false, new List<Move>(){ allMoves["Basic Attack"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"Treant", new Character("Treant", "SpriteTreant", 3, 1, 70, 70, false, new List<Move>(){allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
+        {"Mole", new Character("Mole", "SpriteMole", 5, 1, 50, 50, false, new List<Move>(){ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Mole Slasher", new Character("Mole Slasher", "SpriteMole", 5, 1, 50, 50, false, new List<Move>(){ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Daisy", new Character("Daisy", "SpritePrincess", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
@@ -35,15 +37,19 @@ public static class StaticStorage
         { "Health Potion", new Item("Health Potion", -40, new StatusEffect[]{ }, true, "magic") }
     };
 
-    public static Dictionary<string, ItemAndNumberOwned> playerItems = new Dictionary<string, ItemAndNumberOwned>()
+    public static List<Item> playerItems = new List<Item>()
     {
-        { "Resurrect Potion", new ItemAndNumberOwned(allItems["Resurrect Potion"], 1) },
-        { "Health Potion", new ItemAndNumberOwned(allItems["Health Potion"], 3) }
+        allItems["Resurrect Potion"],
+        allItems["Health Potion"],
+        allItems["Health Potion"],
+        allItems["Health Potion"]
     };
 
-    public static List<Character> playerParty = new List<Character>();
+    public static List<Character> playerParty = new List<Character>() { allCharacters["Toa"], allCharacters["Daisy"] };
 
     public static Dictionary<string, Character> currentCombatParticipants = new Dictionary<string, Character>();
+
+    public static PlayerController player = GameObject.Find("Toa").GetComponent<PlayerController>();
 
     public static void newEncounter(string[] participants)
     {
@@ -53,7 +59,9 @@ public static class StaticStorage
             resetCharacter(allCharacters[name]);
             currentCombatParticipants.Add(name, allCharacters[name]);
         }
-
+        SceneManager.LoadScene("CombatScene", LoadSceneMode.Additive);
+        player.mainCamera.SetActive(false);
+        player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     public static void resetCharacter(Character character)
@@ -85,19 +93,19 @@ public static class StaticStorage
     public class Character
     {
         public string name;
-        public string imageName;
+        public string spriteName;
         public int initiative;
         public int team;
         public int maxHealth;
         public int currentHealth;
         public bool isDead;
-        public Move[] moves;
+        public List<Move> moves;
         public List<StatusEffect> statusEffects;
 
-        public Character(string name, string imageName, int initiative, int team, int maxHealth, int currentHealth, bool isDead, Move[] moves, List<StatusEffect> statusEffects)
+        public Character(string name, string spriteName, int initiative, int team, int maxHealth, int currentHealth, bool isDead, List<Move> moves, List<StatusEffect> statusEffects)
         {
             this.name = name;
-            this.imageName = imageName;
+            this.spriteName = spriteName;
             this.initiative = initiative;
             this.team = team;
             this.maxHealth = maxHealth;
@@ -146,24 +154,21 @@ public static class StaticStorage
         }
     }
 
-    public class ItemAndNumberOwned
+    public static int GetItemCount(Item item)
     {
-        public Item item;
-        public int numberOwned;
-
-        public ItemAndNumberOwned(Item item, int numberOwned)
+        int count = 0;
+        foreach (Item comparedItem in playerItems)
         {
-            this.item = item;
-            this.numberOwned = numberOwned;
+            if (comparedItem == item)
+            {
+                count++;
+            }
         }
+        return count;
     }
 
     public static void UsePlayerItem(string itemName)
     {
-        playerItems[itemName].numberOwned -= 1;
-        if (playerItems[itemName].numberOwned <= 0)
-        {
-            playerItems.Remove(itemName);
-        }
+        playerItems.Remove(allItems[itemName]);
     }
 }
