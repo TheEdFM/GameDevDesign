@@ -22,27 +22,27 @@ public static class StaticStorage
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 100, 100, false, new List<Move>(){ allMoves["Basic Attack"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 10, 10, false, new List<Move>(){ allMoves["Basic Attack"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
         {"Treant", new Character("Treant", "SpriteTreant", 3, 1, 70, 70, false, new List<Move>(){allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
         {"Mole", new Character("Mole", "SpriteMole", 5, 1, 50, 50, false, new List<Move>(){ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
         {"Mole Slasher", new Character("Mole Slasher", "SpriteMole", 5, 1, 50, 50, false, new List<Move>(){ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
         {"Daisy", new Character("Daisy", "SpritePrincess", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
         {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
-        {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })}
+        {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 500, 500, false, new List<Move>(){allMoves["Basic Attack"], allMoves["Nuke Cannon"]}, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
     {
-        { "Resurrect Potion", new Item("Resurrect Potion", -70, new StatusEffect[]{ }, true, "magic") },
-        { "Health Potion", new Item("Health Potion", -40, new StatusEffect[]{ }, true, "magic") }
+        { "Depetrification Crystal", new Item("Depetrification Crystal", -70, new StatusEffect[]{ }, true, "magic") },
+        { "Healcherry", new Item("Healcherry", -40, new StatusEffect[]{ }, true, "magic") }
     };
 
     public static List<Item> playerItems = new List<Item>()
     {
-        allItems["Resurrect Potion"],
-        allItems["Health Potion"],
-        allItems["Health Potion"],
-        allItems["Health Potion"]
+        allItems["Depetrification Crystal"],
+        allItems["Healcherry"],
+        allItems["Healcherry"],
+        allItems["Healcherry"]
     };
 
     public static List<Character> playerParty = new List<Character>() { allCharacters["Toa"], allCharacters["Daisy"] };
@@ -66,8 +66,15 @@ public static class StaticStorage
 
     public static void resetCharacter(Character character)
     {
-        character.isDead = false;
-        character.currentHealth = character.maxHealth;
+        if (!playerParty.Contains(character))
+        {
+            character.isDead = false;
+        }
+        if (!character.isDead)
+        {
+            character.currentHealth = character.maxHealth;
+        }
+        
         character.statusEffects = new List<StatusEffect>();
     }
 

@@ -40,7 +40,7 @@ public class ItemListener : MonoBehaviour
         combatManager.currentlySelectedMoveOrItemName = itemName;
         combatManager.currentlySelectedMoveOrItem = "item";
 
-        if (itemName == "Resurrect Potion")
+        if (itemName == "Depetrification Crystal")
         {
             combatManager.SetUpTargets(true);
         }

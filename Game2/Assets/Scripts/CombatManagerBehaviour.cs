@@ -377,15 +377,30 @@ public class CombatManagerBehaviour : MonoBehaviour
                             break;
                         }
                     }
-                    if (!friendlyAlive)
+                    
+                    if (!enemyAlive && friendlyAlive)
+                    {
+                        if (allCharacters["Toa"].isDead == true)
+                        {
+                            if (GetItemCount(allItems["Depetrification Crystal"]) > 0)
+                            {
+                                StaticStorage.UsePlayerItem("Depetrification Crystal");
+                                StaticStorage.allCharacters["Toa"].isDead = false;
+                                StaticStorage.allCharacters["Toa"].currentHealth = StaticStorage.allCharacters["Toa"].maxHealth;
+                                state = "end";
+                                Debug.Log("You won");
+                            }
+                            else
+                            {
+                                state = "end";
+                                Debug.Log("You lost");
+                            }
+                        }
+                    }
+                    else if (!friendlyAlive)
                     {
                         state = "end";
                         Debug.Log("You lost");
-                    }
-                    else if (!enemyAlive)
-                    {
-                        state = "end";
-                        Debug.Log("You won");
                     }
                     else
                     {

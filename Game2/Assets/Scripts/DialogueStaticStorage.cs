@@ -20,7 +20,7 @@ public static class DialogueStaticStorage
     public static Option testOption2 = new Option("Thank you!",
                     "test3",
                     new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
-                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { allItems["Health Potion"] }, new Item[] { }, ""));
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { allItems["Healcherry"] }, new Item[] { }, ""));
     public static Option testOption3 = new Option("Bye",
                     "test4",
                     new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
@@ -36,7 +36,7 @@ public static class DialogueStaticStorage
             allCharacters["King Jebediah"],
             false);
 
-    public static DialogueNode test1 = new DialogueNode("Yes I can give you a health potion",
+    public static DialogueNode test1 = new DialogueNode("Yes I can give you a Healcherry",
             new Option[] { testOption2 },
             allCharacters["King Jebediah"],
             false);
@@ -65,7 +65,7 @@ public static class DialogueStaticStorage
     public static Option testExtraDialogueOption0 = new Option("Yes",
                     "testExtraDialogue1",
                     new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
-                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, allCharacters["Toa"], new Move[] { allMoves["Nuke Cannon"] }, allCharacters["Toa"], new Move[] { allMoves["Basic Attack"] }, new Character[] { allCharacters["Stranger"] }, new Character[] { allCharacters["Daisy"] }, new Item[] { }, new Item[] { allItems["Health Potion"] }, ""));
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, allCharacters["Toa"], new Move[] { allMoves["Nuke Cannon"] }, allCharacters["Toa"], new Move[] { allMoves["Basic Attack"] }, new Character[] { allCharacters["Stranger"] }, new Character[] { allCharacters["Daisy"] }, new Item[] { }, new Item[] { allItems["Healcherry"] }, ""));
     public static Option testExtraDialogueOption1 = new Option("See you in combat!",
                     "testExtraDialogue1",
                     new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
