@@ -7,8 +7,10 @@ public static class StaticStorage
 {
     public static Dictionary<string, StatusEffect> allStatusEffects = new Dictionary<string, StatusEffect>()
     {
-        {"Stun", new StatusEffect("STN", 0 , "physical", true, 1, 1) },
-        {"Bleed", new StatusEffect("BLD", 10 , "physical", false, 3, 3) }
+        {"Stun", new StatusEffect("STN", 0 , "physical", true, 0, 1, 1) },
+        {"Bleed", new StatusEffect("BLD", 10 , "physical", false, 0, 3, 3) },
+        {"Strength", new StatusEffect("STR", 0 , "physical", false, 15, 3, 3) },
+        {"Weakness", new StatusEffect("WKN", 0 , "physical", false, -10, 3, 3) }
     };
 
     public static Dictionary<string, Move> allMoves = new Dictionary<string, Move>()
@@ -17,18 +19,21 @@ public static class StaticStorage
         { "Basic Heal", new Move("Basic Heal", -20, new StatusEffect[]{ }, true, "magic") },
         { "Basic Bleed", new Move("Basic Bleed", 5, new StatusEffect[]{allStatusEffects["Bleed"]}, false, "physical") },
         { "Basic Stun", new Move("Basic Stun", 5, new StatusEffect[]{allStatusEffects["Stun"]}, false, "physical") },
-        { "Nuke Cannon", new Move("Nuke Cannon", 10000, new StatusEffect[]{}, false, "physical") }
+        { "Nuke Cannon", new Move("Nuke Cannon", 10000, new StatusEffect[]{}, false, "physical") },
+        { "Strength Potion", new Move("Strength Potion", 0, new StatusEffect[]{allStatusEffects["Strength"] }, true, "magic") },
+        { "Weakness Potion", new Move("Weakness Potion", 0, new StatusEffect[]{allStatusEffects["Weakness"] }, false, "magic") }
     };
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 10, 10, false, new List<Move>(){ allMoves["Basic Attack"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
-        {"Treant", new Character("Treant", "SpriteTreant", 3, 1, 70, 70, false, new List<Move>(){allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
-        {"Mole", new Character("Mole", "SpriteMole", 5, 1, 50, 50, false, new List<Move>(){ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
-        {"Mole Slasher", new Character("Mole Slasher", "SpriteMole", 5, 1, 50, 50, false, new List<Move>(){ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
-        {"Daisy", new Character("Daisy", "SpritePrincess", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Heal"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
-        {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 5, 0, 50, 50, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
-        {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 500, 500, false, new List<Move>(){allMoves["Basic Attack"], allMoves["Nuke Cannon"]}, new List<StatusEffect>(){ })}
+        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 10, 10, false, false, new List<Move>(){ allMoves["Basic Attack"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
+        {"Treant", new Character("Treant", "SpriteTreant", 3, 1, 70, 70, false, false, new List<Move>(){allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
+        {"Mole", new Character("Mole", "SpriteMole", 5, 1, 50, 50, false, false, new List<Move>(){ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Mole Slasher", new Character("Mole Slasher", "SpriteMole", 5, 1, 50, 50, false, false, new List<Move>(){ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Daisy", new Character("Daisy", "SpritePrincess", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Heal"], allMoves["Basic Stun"], allMoves["Strength Potion"], allMoves["Weakness Potion"] }, new List<StatusEffect>(){ })},
+        {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 5, 5, false, false, new List<Move>(){allMoves["Basic Attack"], allMoves["Nuke Cannon"]}, new List<StatusEffect>(){ })},
+        {"King Jebediah Interrupt", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Basic Heal"]}, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
@@ -51,8 +56,54 @@ public static class StaticStorage
 
     public static PlayerController player = GameObject.Find("Toa").GetComponent<PlayerController>();
 
+    //Checkpoint stuff
+    public static List<Item> checkpointPlayerItems = new List<Item>();
+
+    public static Dictionary<string, bool> playerPartyCheckpointIsDeads = new Dictionary<string, bool>();
+
+    public static bool testInterruptSave;
+    //Checkpoint stuff end
+
+    public static bool inCombat = false;
+
+    
+    //must remember to add story bools to this when I put new ones in
+    public static void saveCurrentPlayerItemsAndIsDeads()
+    {
+        checkpointPlayerItems.Clear();
+        foreach (Item item in playerItems) 
+        {
+            checkpointPlayerItems.Add(item);
+        }
+
+        playerPartyCheckpointIsDeads.Clear();
+        foreach (Character character in playerParty)
+        {
+            playerPartyCheckpointIsDeads.Add(character.name, character.isDead);
+        }
+
+        testInterruptSave = StoryStaticStorage.testInterrupt;
+}
+
+    public static void restorePlayerToSave()
+    {
+        playerItems.Clear();
+        foreach (Item item in checkpointPlayerItems)
+        {
+            playerItems.Add(item);
+        }
+
+        foreach (Character character in playerParty)
+        {
+            character.isDead = playerPartyCheckpointIsDeads[character.name];
+        }
+
+        StoryStaticStorage.testInterrupt = testInterruptSave;
+    }
+
     public static void newEncounter(string[] participants)
     {
+        saveCurrentPlayerItemsAndIsDeads();
         currentCombatParticipants.Clear();
         foreach (string name in participants)
         {
@@ -62,6 +113,8 @@ public static class StaticStorage
         SceneManager.LoadScene("CombatScene", LoadSceneMode.Additive);
         player.mainCamera.SetActive(false);
         player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+        player.depetrificationWindow.SetActive(false);
+        inCombat = true;
     }
 
     public static void resetCharacter(Character character)
@@ -106,10 +159,11 @@ public static class StaticStorage
         public int maxHealth;
         public int currentHealth;
         public bool isDead;
+        public bool isInterrupt;
         public List<Move> moves;
         public List<StatusEffect> statusEffects;
 
-        public Character(string name, string spriteName, int initiative, int team, int maxHealth, int currentHealth, bool isDead, List<Move> moves, List<StatusEffect> statusEffects)
+        public Character(string name, string spriteName, int initiative, int team, int maxHealth, int currentHealth, bool isDead, bool isInterrupt, List<Move> moves, List<StatusEffect> statusEffects)
         {
             this.name = name;
             this.spriteName = spriteName;
@@ -118,6 +172,7 @@ public static class StaticStorage
             this.maxHealth = maxHealth;
             this.currentHealth = currentHealth;
             this.isDead = isDead;
+            this.isInterrupt = isInterrupt;
             this.moves = moves;
             this.statusEffects = statusEffects;
         }
@@ -129,15 +184,17 @@ public static class StaticStorage
         public int dot;
         public string element;
         public bool stun;
+        public int strength;
         public int maxTurnsRemaining;
         public int currentTurnsRemaining;
 
-        public StatusEffect(string name, int dot, string element, bool stun, int maxTurnsRemaining, int currentTurnsRemaining)
+        public StatusEffect(string name, int dot, string element, bool stun, int strength, int maxTurnsRemaining, int currentTurnsRemaining)
         {
             this.name = name;
             this.dot = dot;
             this.element = element;
             this.stun = stun;
+            this.strength = strength;
             this.maxTurnsRemaining = maxTurnsRemaining;
             this.currentTurnsRemaining = currentTurnsRemaining;
         }

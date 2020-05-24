@@ -25,12 +25,15 @@ public class CombatManagerBehaviour : MonoBehaviour
     public string chosenTargetName;
     public string playerTakingTurnName;
     public bool currentlyStunned;
+    public int currentStrength;
 
     public Vector2 spawnPosFriendly;
     public Vector2 spawnPosEnemy;
     public Vector2 spawnPosVerticalChange;
     public Vector2 spawnPosOffset;
     public float offsetMultiplier;
+
+    public string currentInterruptTargetName;
 
     public GameObject canvas;
 
@@ -102,6 +105,10 @@ public class CombatManagerBehaviour : MonoBehaviour
     public TextMeshProUGUI turnOrderText;
 
     public List<GameObject> cloneList = new List<GameObject>();
+
+    DialogueController dialogueController;
+
+    public GameObject mainCameraCombat;
 
     // Start is called before the first frame update
     void Start()
@@ -207,6 +214,10 @@ public class CombatManagerBehaviour : MonoBehaviour
 
         turnMenuText = GameObject.Find("PlayerTakingTurnText").GetComponent<TextMeshProUGUI>();
         turnOrderText = GameObject.Find("TurnOrderText").GetComponent<TextMeshProUGUI>();
+
+        dialogueController = GameObject.Find("DialogueCombat").GetComponent<DialogueController>();
+
+        mainCameraCombat = GameObject.Find("Main Camera Combat");
 
         //This sets everything to inactive so it must come after finding the gameobjects
         foreach (GameObject menu in menus.Values)
@@ -338,6 +349,11 @@ public class CombatManagerBehaviour : MonoBehaviour
             enemyStatuses["EnemyStatus" + j].SetActive(false);
         }
 
+        foreach (Character character in combatParticipantsSortList)
+        {
+            RefreshHealth(character);
+        }
+
     }
 
     // Update is called once per frame
@@ -351,9 +367,11 @@ public class CombatManagerBehaviour : MonoBehaviour
                 {
                     Destroy(clone);
                 }
+                mainCameraCombat.SetActive(false);
                 SceneManager.UnloadSceneAsync("CombatScene");
                 player.mainCamera.SetActive(true);
                 player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+                inCombat = false;
                 break;
             case "start": // Prepare the player's selection, or prepare and complete the turn for ai
                 {
@@ -392,13 +410,20 @@ public class CombatManagerBehaviour : MonoBehaviour
                             }
                             else
                             {
+                                restorePlayerToSave();
                                 state = "end";
                                 Debug.Log("You lost");
                             }
                         }
+                        else
+                        {
+                            state = "end";
+                            Debug.Log("You won");
+                        }
                     }
                     else if (!friendlyAlive)
                     {
+                        restorePlayerToSave();
                         state = "end";
                         Debug.Log("You lost");
                     }
@@ -424,7 +449,14 @@ public class CombatManagerBehaviour : MonoBehaviour
                         }
                         turnOrderText.text = tempTurnOrderText;
 
-                        turnOrder.Enqueue(turnOrder.Dequeue()); //put them at the back of the queue
+                        if (playerTakingTurn.isInterrupt)
+                        {
+                            turnOrder.Dequeue(); //dont put them at the back of the queue
+                        }
+                        else
+                        {
+                            turnOrder.Enqueue(turnOrder.Dequeue()); //put them at the back of the queue
+                        }
 
                         if (!playerTakingTurn.isDead)
                         {
@@ -432,40 +464,45 @@ public class CombatManagerBehaviour : MonoBehaviour
                             bool stunned = false; //stun wears off each turn
                             currentlyStunned = false;
                             List<StatusEffect> statusEffects = playerTakingTurn.statusEffects;
+                            currentStrength = 0;
                             foreach (StatusEffect statusEffect in statusEffects)
                             {
                                 if (!(statusEffect.currentTurnsRemaining <= 0))
                                 {
                                     playerTakingTurn.currentHealth -= statusEffect.dot;
 
+                                    currentStrength = statusEffect.strength;
+
                                     //for damageIndicator
-                                    GameObject target;
-                                    if (playerTakingTurn.team == 0) //friendly
-                                    {
-                                        int targetIndex = friendlyParty.IndexOf(playerTakingTurn);
-                                        target = friendlyTargets["FriendlyTarget" + (targetIndex + 1)];
-                                    }
-                                    else //enemy
-                                    {
-                                        int targetIndex = enemyParty.IndexOf(playerTakingTurn);
-                                        target = enemyTargets["EnemyTarget" + (targetIndex + 1)];
-                                    }
-                                    GameObject damageIndicator = Instantiate(damageIndicatorPrefab, target.transform.position, new Quaternion(0, 0, 0, 0));
-                                    cloneList.Add(damageIndicator);
-                                    damageIndicator.transform.SetParent(canvas.transform);
-                                    TextMeshProUGUI textMeshProUGUI = damageIndicator.GetComponent<TextMeshProUGUI>();
-                                    textMeshProUGUI.text = System.Math.Abs(statusEffect.dot).ToString();
-                                    if (statusEffect.dot > 0)
-                                    {
-                                        textMeshProUGUI.color = new Color(1, 0, 0, textMeshProUGUI.color.a);
-                                    }
-                                    else if (statusEffect.dot < 0)
-                                    {
-                                        textMeshProUGUI.color = new Color(0, 1, 0, textMeshProUGUI.color.a);
-                                    }
-                                    else
-                                    {
-                                        textMeshProUGUI.color = new Color(1, 1, 0, textMeshProUGUI.color.a);
+                                    if (!(statusEffect.strength != 0 && statusEffect.dot == 0 && statusEffect.stun == false)) {
+                                        GameObject target;
+                                        if (playerTakingTurn.team == 0) //friendly
+                                        {
+                                            int targetIndex = friendlyParty.IndexOf(playerTakingTurn);
+                                            target = friendlyTargets["FriendlyTarget" + (targetIndex + 1)];
+                                        }
+                                        else //enemy
+                                        {
+                                            int targetIndex = enemyParty.IndexOf(playerTakingTurn);
+                                            target = enemyTargets["EnemyTarget" + (targetIndex + 1)];
+                                        }
+                                        GameObject damageIndicator = Instantiate(damageIndicatorPrefab, target.transform.position, new Quaternion(0, 0, 0, 0));
+                                        cloneList.Add(damageIndicator);
+                                        damageIndicator.transform.SetParent(canvas.transform);
+                                        TextMeshProUGUI textMeshProUGUI = damageIndicator.GetComponent<TextMeshProUGUI>();
+                                        textMeshProUGUI.text = System.Math.Abs(statusEffect.dot).ToString();
+                                        if (statusEffect.dot > 0)
+                                        {
+                                            textMeshProUGUI.color = new Color(1, 0, 0, textMeshProUGUI.color.a);
+                                        }
+                                        else if (statusEffect.dot < 0)
+                                        {
+                                            textMeshProUGUI.color = new Color(0, 1, 0, textMeshProUGUI.color.a);
+                                        }
+                                        else
+                                        {
+                                            textMeshProUGUI.color = new Color(1, 1, 0, textMeshProUGUI.color.a);
+                                        }
                                     }
                                     //end damageIndicator
 
@@ -568,7 +605,7 @@ public class CombatManagerBehaviour : MonoBehaviour
                                             StartCoroutine("WaitUseMoveOrItem");
                                         }
                                     }
-                                    else //player is given a selection of their possible actions
+                                    else if (friendlyParty.Contains(playerTakingTurn)) //player is given a selection of their possible actions
                                     {
                                         turnMenuText.text = playerTakingTurn.name;
                                         //Adding the the player's items to their selection
@@ -607,6 +644,17 @@ public class CombatManagerBehaviour : MonoBehaviour
 
                                         //all actions are taken by the listeners
                                     }
+                                    else if (playerTakingTurn.isInterrupt)
+                                    {
+                                        currentlySelectedMoveOrItem = "move";
+                                        currentlySelectedMoveOrItemName = playerTakingTurn.moves[0].name;
+                                        SetChosenTargetName(currentInterruptTargetName);
+                                        StartCoroutine("WaitEndTurn");
+                                        if (!allCharacters[chosenTargetName].isDead)
+                                        {
+                                            StartCoroutine("WaitUseMoveOrItem");
+                                        }
+                                    }
 
                                     state = "waiting"; //wait for user or ai to activate button listeners to progress + time for turn to animate etc
                                 }
@@ -628,7 +676,24 @@ public class CombatManagerBehaviour : MonoBehaviour
 
     private void UseMove(Move move, Character targetCharacter)
     {
-        targetCharacter.currentHealth -= move.damage;
+        int damage;
+        if (move.damage > 0)
+        {
+            if (move.damage + currentStrength >= 0)
+            {
+                damage = move.damage + currentStrength;
+            }
+            else
+            {
+                damage = 0;
+            }
+        }
+        else
+        {
+            damage = move.damage;
+        }
+        
+        targetCharacter.currentHealth -= damage;
 
         //for damageIndicator
         GameObject target;
@@ -646,12 +711,12 @@ public class CombatManagerBehaviour : MonoBehaviour
         cloneList.Add(damageIndicator);
         damageIndicator.transform.SetParent(canvas.transform);
         TextMeshProUGUI textMeshProUGUI = damageIndicator.GetComponent<TextMeshProUGUI>();
-        textMeshProUGUI.text = System.Math.Abs(move.damage).ToString();
-        if (move.damage > 0)
+        textMeshProUGUI.text = System.Math.Abs(damage).ToString();
+        if (damage > 0)
         {
             textMeshProUGUI.color = new Color(1, 0, 0, textMeshProUGUI.color.a);
         }
-        else if (move.damage < 0)
+        else if (damage < 0)
         {
             textMeshProUGUI.color = new Color(0, 1, 0, textMeshProUGUI.color.a);
         }
@@ -662,7 +727,7 @@ public class CombatManagerBehaviour : MonoBehaviour
 
         foreach (StatusEffect statusEffect in move.statusEffects)
         {
-            targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
+            targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.strength, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
         }
 
         RefreshHealth(targetCharacter);
@@ -705,7 +770,7 @@ public class CombatManagerBehaviour : MonoBehaviour
 
         foreach (StatusEffect statusEffect in item.statusEffects)
         {
-            targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
+            targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.strength, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
         }
 
         RefreshHealth(targetCharacter);
@@ -841,7 +906,30 @@ public class CombatManagerBehaviour : MonoBehaviour
         }
         //end displaying status effects
 
+        //Allowing interrupting dialogue
+        if (StoryStaticStorage.testInterrupt)
+        {
+            if (enemyParty[0].currentHealth <= 25)
+            {
+                StoryStaticStorage.testInterrupt = false;
+                currentInterruptTargetName = "EnemyTarget1";
+                dialogueController.SetCurrentDialogue(DialogueStaticStorage.testInterruptDialogue);
+                AddToFrontOfTurnOrder(allCharacters["King Jebediah Interrupt"]);
+            }
+        }
+
         Debug.Log(character.name+"'s current health: "+character.currentHealth);
+    }
+
+    public void AddToFrontOfTurnOrder(Character character)
+    {
+        Character[] charactersInQueue = turnOrder.ToArray();
+        turnOrder.Clear();
+        turnOrder.Enqueue(character);
+        foreach (Character characterInQueue in charactersInQueue)
+        {
+            turnOrder.Enqueue(characterInQueue);
+        }
     }
 
     private static int CompareInitiative(Character participantX, Character participantY)
@@ -861,6 +949,23 @@ public class CombatManagerBehaviour : MonoBehaviour
             else if (chosenTargetName == "EnemyTarget" + i)
             {
                 this.chosenTargetName = enemyParty[i-1].name;
+                break;
+            }
+        }
+    }
+
+    public void SetInterruptTargetName(string chosenTargetName)
+    {
+        for (int i = 1; i <= 4; i++)
+        {
+            if (chosenTargetName == "FriendlyTarget" + i)
+            {
+                this.currentInterruptTargetName = friendlyParty[i - 1].name;
+                break;
+            }
+            else if (chosenTargetName == "EnemyTarget" + i)
+            {
+                this.currentInterruptTargetName = enemyParty[i - 1].name;
                 break;
             }
         }

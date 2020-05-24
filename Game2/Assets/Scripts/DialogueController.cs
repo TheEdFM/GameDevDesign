@@ -119,7 +119,10 @@ public class DialogueController : MonoBehaviour
                 dialoguePanel.SetActive(false);
                 dialogueName.SetActive(false);
                 dialogueText.SetActive(false);
-                toaRB.constraints = RigidbodyConstraints2D.FreezeRotation;
+                if (!StaticStorage.inCombat)
+                {
+                    toaRB.constraints = RigidbodyConstraints2D.FreezeRotation;
+                }
             }
             else
             {

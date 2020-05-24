@@ -57,14 +57,17 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            UpdateDepetrificationWindow();
-            if (!depetrificationWindow.active)
+            if (!inCombat)
             {
-                depetrificationWindow.SetActive(true);
-            }
-            else
-            {
-                depetrificationWindow.SetActive(false);
+                UpdateDepetrificationWindow();
+                if (!depetrificationWindow.active)
+                {
+                    depetrificationWindow.SetActive(true);
+                }
+                else
+                {
+                    depetrificationWindow.SetActive(false);
+                }
             }
         }
 

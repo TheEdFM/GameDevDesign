@@ -84,6 +84,30 @@ public static class DialogueStaticStorage
 
     //testExtraDialogue dialogue end
 
+    //testInterrupt dialogue
+
+    public static Option testInterruptOption0 = new Option("Close dialogue",
+                "testInterrupt0",
+                new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+    public static Option testInterruptOption1 = new Option("shouldn't show",
+                    "testInterrupt1",
+                    new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                    new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+
+    public static DialogueNode testInterrupt0 = new DialogueNode("Hey I'm here to interrupt",
+            new Option[] { testInterruptOption0 },
+            allCharacters["King Jebediah Interrupt"],
+            true);
+    public static DialogueNode testInterrupt1 = new DialogueNode("shouldn't show",
+            new Option[] { testInterruptOption1 },
+            allCharacters["King Jebediah Interrupt"],
+            true);
+
+    public static Dialogue testInterruptDialogue = new Dialogue(testInterrupt0);
+
+    //testInterrupt dialogue end
+
     //This is here so they can all reference themselves and ones which were defined before themselves
     public static Dictionary<string, DialogueNode> allDialogueNodes = new Dictionary<string, DialogueNode>()
     {
@@ -93,7 +117,9 @@ public static class DialogueStaticStorage
         {"test3", test3 },
         {"test4", test4 },
         {"testExtraDialogue0", testExtraDialogue0 },
-        {"testExtraDialogue1", testExtraDialogue1 }
+        {"testExtraDialogue1", testExtraDialogue1 },
+        {"testInterrupt0", testInterrupt0 },
+        {"testInterrupt1", testInterrupt1 }
     };
 
     public class Dialogue

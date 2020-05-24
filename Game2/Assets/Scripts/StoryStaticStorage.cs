@@ -15,15 +15,15 @@ public static class StoryStaticStorage
     public static float good = 50;
 
     //Story engine bools
-    public static bool test = false;
+    public static bool testInterrupt = true;
 
     public static void storySwitch(string storyString)
     {
         switch (storyString)
         {
-            case "test":
+            case "testInterrupt":
                 //and any other stuff which will happen in the scene
-                test = true;
+                testInterrupt = true;
                 break;
             case "testTest":
                 break;
