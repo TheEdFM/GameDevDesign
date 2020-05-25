@@ -917,6 +917,26 @@ public class CombatManagerBehaviour : MonoBehaviour
                 AddToFrontOfTurnOrder(allCharacters["King Jebediah Interrupt"]);
             }
         }
+        if (StoryStaticStorage.kingInterruptFirst)
+        {
+            if (enemyParty[0].currentHealth <= 75)
+            {
+                StoryStaticStorage.kingInterruptFirst = false;
+                currentInterruptTargetName = "EnemyTarget1";
+                dialogueController.SetCurrentDialogue(DialogueStaticStorage.kingInterruptFirstDialogue);
+                AddToFrontOfTurnOrder(allCharacters["King Jebediah Interrupt1"]);
+            }
+        }
+        if (StoryStaticStorage.kingInterruptSecond)
+        {
+            if (enemyParty[0].currentHealth <= 75)
+            {
+                StoryStaticStorage.kingInterruptSecond = false;
+                currentInterruptTargetName = "EnemyTarget1";
+                dialogueController.SetCurrentDialogue(DialogueStaticStorage.kingInterruptSecondDialogue);
+                AddToFrontOfTurnOrder(allCharacters["King Jebediah Interrupt2"]);
+            }
+        }
 
         Debug.Log(character.name+"'s current health: "+character.currentHealth);
     }

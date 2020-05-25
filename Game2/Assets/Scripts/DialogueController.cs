@@ -22,6 +22,9 @@ public class DialogueController : MonoBehaviour
     public float timeBetweenLetters = 0.01f;
     public bool newNode = false;
 
+    public bool typingOut = false;
+    private List<bool> typeOutBools = new List<bool>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,12 +64,22 @@ public class DialogueController : MonoBehaviour
 
             if (newNode)
             {
+                if (typeOutBools.Count > 0)
+                {
+                    typeOutBools[typeOutBools.Count - 1] = false;
+                }
+                typeOutBools.Add(true);
+                typingOut = true;
                 StartCoroutine("TypeOut");
                 newNode = false;
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                skipTypeOut = true;
+                if (typingOut)
+                {
+                    skipTypeOut = true;
+                    typingOut = false;
+                }
             }
             
 
@@ -145,6 +158,7 @@ public class DialogueController : MonoBehaviour
 
     IEnumerator TypeOut()
     {
+        int typeOutNumber = typeOutBools.Count-1;
         int i = 0;
         string partialText = "";
         foreach (char c in text)
@@ -153,6 +167,10 @@ public class DialogueController : MonoBehaviour
             {
                 textText.text = text;
                 skipTypeOut = false;
+                break;
+            }
+            else if (typeOutBools[typeOutNumber] == false)
+            {
                 break;
             }
             else if (i <= currentDialogue.currentNode.characterText.Length-1) {

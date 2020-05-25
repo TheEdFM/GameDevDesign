@@ -21,7 +21,8 @@ public static class StaticStorage
         { "Basic Stun", new Move("Basic Stun", 5, new StatusEffect[]{allStatusEffects["Stun"]}, false, "physical") },
         { "Nuke Cannon", new Move("Nuke Cannon", 10000, new StatusEffect[]{}, false, "physical") },
         { "Strength Potion", new Move("Strength Potion", 0, new StatusEffect[]{allStatusEffects["Strength"] }, true, "magic") },
-        { "Weakness Potion", new Move("Weakness Potion", 0, new StatusEffect[]{allStatusEffects["Weakness"] }, false, "magic") }
+        { "Weakness Potion", new Move("Weakness Potion", 0, new StatusEffect[]{allStatusEffects["Weakness"] }, false, "magic") },
+        { "Healing Potion", new Move("Healing Potion", -50, new StatusEffect[]{ }, true, "magic") }
     };
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
@@ -33,7 +34,13 @@ public static class StaticStorage
         {"Daisy", new Character("Daisy", "SpritePrincess", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Heal"], allMoves["Basic Stun"], allMoves["Strength Potion"], allMoves["Weakness Potion"] }, new List<StatusEffect>(){ })},
         {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
         {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 5, 5, false, false, new List<Move>(){allMoves["Basic Attack"], allMoves["Nuke Cannon"]}, new List<StatusEffect>(){ })},
-        {"King Jebediah Interrupt", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Basic Heal"]}, new List<StatusEffect>(){ })}
+        {"King Jebediah Interrupt", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Basic Heal"]}, new List<StatusEffect>(){ })},
+        {"Narrator", new Character("Narrator", "SpriteTreant", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"Felix", new Character("Felix", "SpriteFox", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"Dwayne", new Character("Dwayne", "SpriteDwayne", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"Whaihua", new Character("Whaihua", "SpriteSquirrel", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"King Jebediah Interrupt1", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Strength Potion"] }, new List<StatusEffect>(){ })},
+        {"King Jebediah Interrupt2", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Healing Potion"] }, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
@@ -50,7 +57,7 @@ public static class StaticStorage
         allItems["Healcherry"]
     };
 
-    public static List<Character> playerParty = new List<Character>() { allCharacters["Toa"], allCharacters["Daisy"] };
+    public static List<Character> playerParty = new List<Character>() { allCharacters["Toa"] };
 
     public static Dictionary<string, Character> currentCombatParticipants = new Dictionary<string, Character>();
 

@@ -15,7 +15,9 @@ public static class StoryStaticStorage
     public static float good = 50;
 
     //Story engine bools
-    public static bool testInterrupt = true;
+    public static bool testInterrupt = false;
+    public static bool kingInterruptFirst = false;
+    public static bool kingInterruptSecond = false;
 
     public static void storySwitch(string storyString)
     {
@@ -27,11 +29,18 @@ public static class StoryStaticStorage
                 break;
             case "testTest":
                 break;
+            case "acceptKingQuest":
+                kingInterruptFirst = true;
+                break;
+            case "wonFirstFight":
+                kingInterruptSecond = true;
+                break;
             case "":
                 break;
             default:
                 Debug.Log("No storyString found");
                 break;
+                
         }
     }
 }
