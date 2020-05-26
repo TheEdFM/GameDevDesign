@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public static class StoryStaticStorage
 {
+    public static DialogueController dialogueController = GameObject.Find("Dialogue").GetComponent<DialogueController>();
+
     //Player dialogue stats
     public static float greedy = 50;
     public static float giving = 50;
@@ -18,6 +21,7 @@ public static class StoryStaticStorage
     public static bool testInterrupt = false;
     public static bool kingInterruptFirst = false;
     public static bool kingInterruptSecond = false;
+    public static bool lastDialogue = false;
 
     public static void storySwitch(string storyString)
     {
@@ -29,11 +33,20 @@ public static class StoryStaticStorage
                 break;
             case "testTest":
                 break;
-            case "acceptKingQuest":
+            case "felixAttack":
                 kingInterruptFirst = true;
+                break;
+            case "grasshopperAttack":
+                kingInterruptSecond = true;
                 break;
             case "wonFirstFight":
                 kingInterruptSecond = true;
+                break;
+            case "wonLastFight":
+                dialogueController.SetCurrentDialogue(DialogueStaticStorage.kingDeathDialogue);
+                break;
+            case "wonGame":
+                SceneManager.LoadScene("WinScene");
                 break;
             case "":
                 break;

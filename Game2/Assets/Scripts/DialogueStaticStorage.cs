@@ -140,7 +140,7 @@ public static class DialogueStaticStorage
     public static Option kingIntroductionOption2 = new Option("Of course I will!",
                 "kingIntroduction4",
                 new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
-                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, "acceptKingQuest"));
+                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] {allItems["Depetrification Crystal"], allItems["Depetrification Crystal"] }, new Item[] { }, "acceptKingQuest"));
     public static Option kingIntroductionOption3 = new Option("That sounds like a lot of work, what’s in it for me?",
             "kingIntroduction3",
             new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
@@ -186,7 +186,7 @@ public static class DialogueStaticStorage
     public static DialogueNode kingIntroduction4 = new DialogueNode("Praises upon you! The sword at the center of the kingdom lies to the <direction> of this " +
         "castles ruin. On your journey many animals may threaten you, in any time of peril when you, or an ally need it most, these Depetrification Crystals " +
         "will get you back to fighting fit in absolutely no time at all! {Press R to open a Depetrification menu outside of combat}\nIf you do happen to find " +
-        "any of those crazed animals, deliver the finishing blow to them with this Rejuvenating McGuffin to Save the Animals.\nNow fly, and rid us all of this " +
+        "any of those crazed animals defeating them in combat should release them from the spell.\nNow fly, and rid us all of this " +
         "wretched curse!",
             new Option[] { kingIntroductionOption5 },
             allCharacters["King Jebediah"],
@@ -228,6 +228,10 @@ public static class DialogueStaticStorage
                 "felix3",
                 new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
                 new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+    public static Option felixOption6 = new Option("Let's go!",
+                "felix4",
+                new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
 
     public static DialogueNode felix0 = new DialogueNode("And that Felicia is how we- " +
         "ohmygodwhoareyouwhereamIwhydoesthisplacelookfamiliarandwhydoesmyheadhurstsobad. Oh wow! My head hurts real bad. Like kicked in the head for " +
@@ -254,7 +258,7 @@ public static class DialogueStaticStorage
             allCharacters["Narrator"],
             false);
     public static DialogueNode felix4 = new DialogueNode("Come on lets go, my family is counting on us.",
-            new Option[] { felixOption2 },
+            new Option[] { felixOption6 },
             allCharacters["Felix"],
             true);
     public static DialogueNode felix5 = new DialogueNode("Well thanks for freeing me from that spell all the same! I guess I’ll look for them if it’s all the " +
@@ -335,10 +339,10 @@ public static class DialogueStaticStorage
 
     //whaihua dialogue
 
-    public static Option whaihuaOption0 = new Option("Of course, I can’t even imagine what it’s like going years without food!",
+    public static Option whaihuaOption0 = new Option("Of course, I can’t even imagine what it’s like going years without food! (-2 Healcherries)",
                 "whaihua1",
                 new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
-                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] {allItems["Healcherry"] }, ""));
     public static Option whaihuaOption1 = new Option("I can feel how close I am to that sword, sorry but I can’t waste any time.",
                 "whaihua4",
                 new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
@@ -429,9 +433,9 @@ public static class DialogueStaticStorage
     //kingDeath dialogue
 
     public static Option kingDeathOption0 = new Option("Continue",
-                "kingDeath1",
+                "kingDeath0",
                 new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
-                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+                new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, "wonGame"));
     public static Option kingDeathOption1 = new Option("Continue",
                 "kingDeath0",
                 new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
@@ -477,7 +481,7 @@ public static class DialogueStaticStorage
                 new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
 
     public static DialogueNode kingInterruptFirst0 = new DialogueNode("Greetings hero, I’m glad I encountered you here! I found this attack boosting potion " +
-        "knocking around my throne room!\nHere!\nCatch!",
+        "knocking around my throne room!\nHere!\nCatch!\nCurses my aim was off!",
             new Option[] { kingInterruptFirstOption0 },
             allCharacters["King Jebediah Interrupt1"],
             true);
@@ -494,7 +498,7 @@ public static class DialogueStaticStorage
                 new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
 
     public static DialogueNode kingInterruptSecond0 = new DialogueNode("Salutations hero, what a chance meeting! You’re looking a bit beaten up there, " +
-        "let me heal you up!",
+        "let me heal you up!\nCurses the grasshoppy jumped in the way!",
             new Option[] { kingInterruptSecondOption0 },
             allCharacters["King Jebediah Interrupt2"],
             true);
@@ -502,6 +506,21 @@ public static class DialogueStaticStorage
     public static Dialogue kingInterruptSecondDialogue = new Dialogue(kingInterruptSecond0);
 
     //kingInterruptSecond dialogue end
+
+    //cherryInfo dialogue end
+    public static Option cherryInfoOption0 = new Option("Continue...",
+            "cherryInfo0",
+            new Requirements(1, 0, 1, 0, 1, 0, 1, 0),
+            new Effects(0, 0, 0, 0, 0, 0, 0, 0, null, new Move[] { }, null, new Move[] { }, new Character[] { }, new Character[] { }, new Item[] { }, new Item[] { }, ""));
+
+    public static DialogueNode cherryInfo0 = new DialogueNode("This wild Healcherry can be used in combat for a quick heal!",
+            new Option[] { cherryInfoOption0 },
+            allCharacters["Narrator"],
+            true);
+
+    public static Dialogue cherryInfoDialogue = new Dialogue(cherryInfo0);
+
+    //cherryInfo dialogue end
 
     //This is here so they can all reference themselves and ones which were defined before themselves
     public static Dictionary<string, DialogueNode> allDialogueNodes = new Dictionary<string, DialogueNode>()
@@ -546,7 +565,8 @@ public static class DialogueStaticStorage
         {"kingAttack0", kingAttack0 },
         {"loss0", loss0 },
         {"kingInterruptFirst0", kingInterruptFirst0 },
-        {"kingInterruptSecond0", kingInterruptSecond0 }
+        {"kingInterruptSecond0", kingInterruptSecond0 },
+        {"cherryInfo0", cherryInfo0 }
     };
 
     public class Dialogue

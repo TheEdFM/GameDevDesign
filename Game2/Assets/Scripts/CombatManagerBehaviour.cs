@@ -8,6 +8,7 @@ using static StaticStorage;
 
 public class CombatManagerBehaviour : MonoBehaviour
 {
+
     Queue<Character> turnOrder = new Queue<Character>();
     List<Character> combatParticipantsSortList = new List<Character>();
     List<Character> friendlyParty = new List<Character>();
@@ -94,6 +95,9 @@ public class CombatManagerBehaviour : MonoBehaviour
     public GameObject spriteTreant;
     public GameObject spriteMole;
     public GameObject spriteStranger;
+    public GameObject spriteFox;
+    public GameObject spriteGrasshopper;
+    public GameObject spriteSquirrel;
 
     public Dictionary<string, GameObject> friendlySprites = new Dictionary<string, GameObject>();
 
@@ -110,6 +114,13 @@ public class CombatManagerBehaviour : MonoBehaviour
 
     public GameObject mainCameraCombat;
 
+    private AudioSource combatAudio;
+    public AudioClip hitSound;
+    public AudioClip healSound;
+
+    public GameObject LoseScreen;
+    public GameObject WinScreen;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -122,6 +133,11 @@ public class CombatManagerBehaviour : MonoBehaviour
         state = "start";
 
         canvas = GameObject.Find("Canvas");
+
+        
+
+        LoseScreen = GameObject.Find("Gameover");
+        WinScreen = GameObject.Find("Gamewin");
 
         turnMenu = GameObject.Find("TurnMenu");
         contextMenu = GameObject.Find("ContextMenu");
@@ -203,6 +219,9 @@ public class CombatManagerBehaviour : MonoBehaviour
         spriteTreant = GameObject.Find("SpriteTreant");
         spriteMole = GameObject.Find("SpriteMole");
         spriteStranger = GameObject.Find("SpriteStranger");
+        spriteFox = GameObject.Find("SpriteFox");
+        spriteGrasshopper = GameObject.Find("SpriteGrasshopper");
+        spriteSquirrel = GameObject.Find("SpriteSquirrel");
         sprites.Add("SpriteHero", spriteHero);
         sprites.Add("SpritePrincess", spritePrincess);
         sprites.Add("SpriteOldMan", spriteOldMan);
@@ -211,6 +230,9 @@ public class CombatManagerBehaviour : MonoBehaviour
         sprites.Add("SpriteTreant", spriteTreant);
         sprites.Add("SpriteMole", spriteMole);
         sprites.Add("SpriteStranger", spriteStranger);
+        sprites.Add("SpriteFox", spriteFox);
+        sprites.Add("SpriteGrasshopper", spriteGrasshopper);
+        sprites.Add("SpriteSquirrel", spriteSquirrel);
 
         turnMenuText = GameObject.Find("PlayerTakingTurnText").GetComponent<TextMeshProUGUI>();
         turnOrderText = GameObject.Find("TurnOrderText").GetComponent<TextMeshProUGUI>();
@@ -218,6 +240,7 @@ public class CombatManagerBehaviour : MonoBehaviour
         dialogueController = GameObject.Find("DialogueCombat").GetComponent<DialogueController>();
 
         mainCameraCombat = GameObject.Find("Main Camera Combat");
+        combatAudio = mainCameraCombat.GetComponent<AudioSource>();
 
         //This sets everything to inactive so it must come after finding the gameobjects
         foreach (GameObject menu in menus.Values)
@@ -337,7 +360,7 @@ public class CombatManagerBehaviour : MonoBehaviour
 
             GameObject enemySprite = Instantiate(sprites[character.spriteName], spawnPosEnemy + (spawnPosVerticalChange * (i - 1)), new Quaternion(0, 0, 0, 0));
             cloneList.Add(enemySprite);
-            enemySprite.transform.localScale = new Vector3(enemySprite.transform.localScale.x * -2, enemySprite.transform.localScale.y * 2, enemySprite.transform.localScale.y * 2);
+            enemySprite.transform.localScale = new Vector3(enemySprite.transform.localScale.x * 2, enemySprite.transform.localScale.y * 2, enemySprite.transform.localScale.y * 2);
             SpriteRenderer enemySpriteSR = enemySprite.GetComponent<SpriteRenderer>();
             enemySpriteSR.sortingOrder = 101;
             enemySprites.Add("EnemySprite" + i, enemySprite);
@@ -372,6 +395,10 @@ public class CombatManagerBehaviour : MonoBehaviour
                 player.mainCamera.SetActive(true);
                 player.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
                 inCombat = false;
+                if (isLastFight)
+                {
+                    StoryStaticStorage.storySwitch("wonLastFight");
+                }
                 break;
             case "start": // Prepare the player's selection, or prepare and complete the turn for ai
                 {
@@ -410,9 +437,9 @@ public class CombatManagerBehaviour : MonoBehaviour
                             }
                             else
                             {
-                                restorePlayerToSave();
-                                state = "end";
+                                //restorePlayerToSave();
                                 Debug.Log("You lost");
+                                SceneManager.LoadScene("LoseScene");
                             }
                         }
                         else
@@ -423,9 +450,10 @@ public class CombatManagerBehaviour : MonoBehaviour
                     }
                     else if (!friendlyAlive)
                     {
-                        restorePlayerToSave();
+                        //restorePlayerToSave();
                         state = "end";
                         Debug.Log("You lost");
+                        SceneManager.LoadScene("LoseScene");
                     }
                     else
                     {
@@ -433,7 +461,7 @@ public class CombatManagerBehaviour : MonoBehaviour
                         Character playerTakingTurn = turnOrder.Peek(); //which character is taking the turn
                         playerTakingTurnName = playerTakingTurn.name;
 
-                        string tempTurnOrderText = "";
+                        string tempTurnOrderText = "Turn Order: ";
                         int turnOrderI = 0;
                         foreach (Character c in turnOrder)
                         {
@@ -729,6 +757,15 @@ public class CombatManagerBehaviour : MonoBehaviour
         {
             targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.strength, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
         }
+        if (damage >= 0)
+        {
+            combatAudio.PlayOneShot(hitSound, 1);
+        }
+        else
+        {
+            combatAudio.PlayOneShot(healSound, 1);
+        }
+        
 
         RefreshHealth(targetCharacter);
 
@@ -771,6 +808,15 @@ public class CombatManagerBehaviour : MonoBehaviour
         foreach (StatusEffect statusEffect in item.statusEffects)
         {
             targetCharacter.statusEffects.Add(new StatusEffect(statusEffect.name, statusEffect.dot, statusEffect.element, statusEffect.stun, statusEffect.strength, statusEffect.maxTurnsRemaining, statusEffect.currentTurnsRemaining));
+        }
+
+        if (item.damage >= 0)
+        {
+            combatAudio.PlayOneShot(hitSound, 1);
+        }
+        else
+        {
+            combatAudio.PlayOneShot(healSound, 1);
         }
 
         RefreshHealth(targetCharacter);
@@ -919,7 +965,7 @@ public class CombatManagerBehaviour : MonoBehaviour
         }
         if (StoryStaticStorage.kingInterruptFirst)
         {
-            if (enemyParty[0].currentHealth <= 75)
+            if (enemyParty[0].currentHealth <= 50)
             {
                 StoryStaticStorage.kingInterruptFirst = false;
                 currentInterruptTargetName = "EnemyTarget1";
@@ -929,7 +975,7 @@ public class CombatManagerBehaviour : MonoBehaviour
         }
         if (StoryStaticStorage.kingInterruptSecond)
         {
-            if (enemyParty[0].currentHealth <= 75)
+            if (enemyParty[0].currentHealth <= 50)
             {
                 StoryStaticStorage.kingInterruptSecond = false;
                 currentInterruptTargetName = "EnemyTarget1";

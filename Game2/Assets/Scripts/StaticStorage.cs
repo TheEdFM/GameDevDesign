@@ -9,38 +9,54 @@ public static class StaticStorage
     {
         {"Stun", new StatusEffect("STN", 0 , "physical", true, 0, 1, 1) },
         {"Bleed", new StatusEffect("BLD", 10 , "physical", false, 0, 3, 3) },
-        {"Strength", new StatusEffect("STR", 0 , "physical", false, 15, 3, 3) },
-        {"Weakness", new StatusEffect("WKN", 0 , "physical", false, -10, 3, 3) }
+        {"Strength", new StatusEffect("STR", 0 , "physical", false, 10, 3, 3) },
+        {"Weakness", new StatusEffect("WKN", 0 , "physical", false, -5, 3, 3) }
     };
 
     public static Dictionary<string, Move> allMoves = new Dictionary<string, Move>()
     {
         { "Basic Attack", new Move("Basic Attack", 20, new StatusEffect[]{ }, false, "physical") },
-        { "Basic Heal", new Move("Basic Heal", -20, new StatusEffect[]{ }, true, "magic") },
-        { "Basic Bleed", new Move("Basic Bleed", 5, new StatusEffect[]{allStatusEffects["Bleed"]}, false, "physical") },
+        { "Basic Heal", new Move("Basic Heal", -10, new StatusEffect[]{ }, true, "magic") },
+        { "Bleed", new Move("Bleed", 5, new StatusEffect[]{allStatusEffects["Bleed"]}, false, "physical") },
         { "Basic Stun", new Move("Basic Stun", 5, new StatusEffect[]{allStatusEffects["Stun"]}, false, "physical") },
         { "Nuke Cannon", new Move("Nuke Cannon", 10000, new StatusEffect[]{}, false, "physical") },
         { "Strength Potion", new Move("Strength Potion", 0, new StatusEffect[]{allStatusEffects["Strength"] }, true, "magic") },
         { "Weakness Potion", new Move("Weakness Potion", 0, new StatusEffect[]{allStatusEffects["Weakness"] }, false, "magic") },
-        { "Healing Potion", new Move("Healing Potion", -50, new StatusEffect[]{ }, true, "magic") }
+        { "Healing Potion", new Move("Healing Potion", -50, new StatusEffect[]{ }, true, "magic") },
+        { "Claw", new Move("Claw", 20, new StatusEffect[]{ }, false, "physical") },
+        { "Sword Slash", new Move("Sword Slash", 20, new StatusEffect[]{ }, false, "physical") },
+        { "Restoration", new Move("Restoration", -20, new StatusEffect[]{ }, true, "magic") },
+        { "Severing Strike", new Move("Severing Strike", 5, new StatusEffect[]{allStatusEffects["Bleed"]}, false, "physical") },
+        { "Rock Bottom", new Move("Rock Bottom", 10, new StatusEffect[]{allStatusEffects["Stun"]}, false, "physical") },
+        { "Nut Throw", new Move("Nut Throw", 10, new StatusEffect[]{allStatusEffects["Weakness"] }, false, "physical") },
+        { "People's Elbow", new Move("People's Elbow", 20, new StatusEffect[]{ }, false, "physical") },
+        { "Petrifying Blast", new Move("Petrifying Blast", 45, new StatusEffect[]{ }, false, "magic") },
+        { "Staff Smash", new Move("Staff Smash", 20, new StatusEffect[]{ }, false, "magic") },
+        { "Howl", new Move("Howl", 0, new StatusEffect[]{allStatusEffects["Strength"] }, true, "magic") },
+        { "Hypnotising Chirp", new Move("Hypnotising Chirp", 10, new StatusEffect[]{allStatusEffects["Stun"] }, false, "magic") },
+        { "Rejuvenation", new Move("Rejuvenation", -10, new StatusEffect[]{ }, true, "magic") },
     };
 
     public static Dictionary<string, Character> allCharacters = new Dictionary<string, Character>()
     {
-        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 10, 10, false, false, new List<Move>(){ allMoves["Basic Attack"], allMoves["Basic Bleed"], allMoves["Basic Stun"] }, new List<StatusEffect>(){ })},
-        {"Treant", new Character("Treant", "SpriteTreant", 3, 1, 70, 70, false, false, new List<Move>(){allMoves["Basic Heal"] }, new List<StatusEffect>(){ })},
+        {"Toa", new Character("Toa", "SpriteHero", 10, 0, 100, 100, false, false, new List<Move>(){allMoves["Sword Slash"], allMoves["Restoration"], allMoves["Severing Strike"] }, new List<StatusEffect>(){ })},
+        {"Bewitched Treant", new Character("Bewitched Treant", "SpriteTreant", 3, 1, 50, 50, false, false, new List<Move>(){allMoves["Rejuvenation"] }, new List<StatusEffect>(){ })},
         {"Mole", new Character("Mole", "SpriteMole", 5, 1, 50, 50, false, false, new List<Move>(){ allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
-        {"Mole Slasher", new Character("Mole Slasher", "SpriteMole", 5, 1, 50, 50, false, false, new List<Move>(){ allMoves["Basic Bleed"], allMoves["Basic Attack"] }, new List<StatusEffect>(){ })},
+        {"Bewitched Mole Slasher", new Character("Bewitched Mole Slasher", "SpriteMole", 5, 1, 50, 50, false, false, new List<Move>(){ allMoves["Bleed"], allMoves["Claw"] }, new List<StatusEffect>(){ })},
         {"Daisy", new Character("Daisy", "SpritePrincess", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Heal"], allMoves["Basic Stun"], allMoves["Strength Potion"], allMoves["Weakness Potion"] }, new List<StatusEffect>(){ })},
-        {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"King Jebediah", new Character("King Jebediah", "SpriteOldMan", 9, 1, 120, 120, false, false, new List<Move>(){allMoves["Petrifying Blast"], allMoves["Staff Smash"], allMoves["Staff Smash"], allMoves["Restoration"] }, new List<StatusEffect>(){ })},
         {"Stranger", new Character("Stranger", "SpriteStranger", 5, 0, 5, 5, false, false, new List<Move>(){allMoves["Basic Attack"], allMoves["Nuke Cannon"]}, new List<StatusEffect>(){ })},
         {"King Jebediah Interrupt", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Basic Heal"]}, new List<StatusEffect>(){ })},
         {"Narrator", new Character("Narrator", "SpriteTreant", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
-        {"Felix", new Character("Felix", "SpriteFox", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
-        {"Dwayne", new Character("Dwayne", "SpriteDwayne", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
-        {"Whaihua", new Character("Whaihua", "SpriteSquirrel", 5, 0, 50, 50, false, false, new List<Move>(){allMoves["Basic Attack"]}, new List<StatusEffect>(){ })},
+        {"Felix", new Character("Felix", "SpriteFox", 5, 0, 80, 80, false, false, new List<Move>(){allMoves["Claw"], allMoves["Howl"] }, new List<StatusEffect>(){ })},
+        {"Dwayne", new Character("Dwayne", "SpriteStranger", 5, 0, 90, 90, false, false, new List<Move>(){allMoves["Rock Bottom"], allMoves["People's Elbow"] }, new List<StatusEffect>(){ })},
+        {"Whaihua", new Character("Whaihua", "SpriteSquirrel", 5, 0, 70, 70, false, false, new List<Move>(){allMoves["Claw"], allMoves["Nut Throw"]}, new List<StatusEffect>(){ })},
         {"King Jebediah Interrupt1", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Strength Potion"] }, new List<StatusEffect>(){ })},
-        {"King Jebediah Interrupt2", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Healing Potion"] }, new List<StatusEffect>(){ })}
+        {"King Jebediah Interrupt2", new Character("King Jebediah", "SpriteOldMan", 5, 0, 5, 5, false, true, new List<Move>(){allMoves["Healing Potion"] }, new List<StatusEffect>(){ })},
+        {"Bewitched Mole", new Character("Bewitched Mole", "SpriteMole", 5, 1, 50, 50, false, false, new List<Move>(){allMoves["Claw"] }, new List<StatusEffect>(){ })},
+        {"Bewitched Fox", new Character("Bewitched Fox", "SpriteFox", 5, 1, 75, 75, false, false, new List<Move>(){allMoves["Claw"], allMoves["Howl"]  }, new List<StatusEffect>(){ })},
+        {"Bewitched Grasshopper", new Character("Bewitched Grasshopper", "SpriteGrasshopper", 5, 1, 80, 80, false, false, new List<Move>(){allMoves["Claw"], allMoves["Hypnotising Chirp"] }, new List<StatusEffect>(){ })},
+        {"Bewitched Squirrel", new Character("Bewitched Squirrel", "SpriteSquirrel", 5, 1, 80, 80, false, false, new List<Move>(){allMoves["Claw"], allMoves["Nut Throw"] }, new List<StatusEffect>(){ })}
     };
 
     public static Dictionary<string, Item> allItems = new Dictionary<string, Item>()
@@ -51,10 +67,6 @@ public static class StaticStorage
 
     public static List<Item> playerItems = new List<Item>()
     {
-        allItems["Depetrification Crystal"],
-        allItems["Healcherry"],
-        allItems["Healcherry"],
-        allItems["Healcherry"]
     };
 
     public static List<Character> playerParty = new List<Character>() { allCharacters["Toa"] };
@@ -72,6 +84,8 @@ public static class StaticStorage
     //Checkpoint stuff end
 
     public static bool inCombat = false;
+
+    public static bool isLastFight = false;
 
     
     //must remember to add story bools to this when I put new ones in
@@ -110,7 +124,7 @@ public static class StaticStorage
 
     public static void newEncounter(string[] participants)
     {
-        saveCurrentPlayerItemsAndIsDeads();
+        //saveCurrentPlayerItemsAndIsDeads();
         currentCombatParticipants.Clear();
         foreach (string name in participants)
         {

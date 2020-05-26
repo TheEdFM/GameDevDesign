@@ -60,6 +60,9 @@ public class DialogueScript : MonoBehaviour
             case "kingInterruptSecondDialogue":
                 dialogueController.SetCurrentDialogue(kingInterruptSecondDialogue);
                 break;
+            case "cherryInfo":
+                dialogueController.SetCurrentDialogue(cherryInfoDialogue);
+                break;
         }
     }
 }
